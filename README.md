@@ -6,7 +6,9 @@
   - [x] sintaxe/como usar
   - [] como aplicar no projeto? o que testar?
 - [] infinite scroll
-- [] https://developer.marvel.com/
+- [x] api https://developer.marvel.com/
+  - [x] gerar keys
+  - [x] base endpoint https://gateway.marvel.com/
 - [] Layout da página
 - [] Visão geral personagem component
 - [] Barra de pesquisa
