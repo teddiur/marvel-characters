@@ -1,19 +1,14 @@
-# Marvel
+# Peronsagens da Marvel
 
-## To-do
+Aplicação ReactJS que consome dados da API da [Marvel](https://developer.marvel.com/). Ela lista os personagens, além de permitir a busca de um personagem específico e, ao clicar em algum personagem, mostra informações detalhadas dele.
 
-- [] jest
-  - [x] sintaxe/como usar
-  - [] como aplicar no projeto? o que testar?
-- [] infinite scroll
-- [x] api https://developer.marvel.com/
-  - [x] gerar keys
-  - [x] base endpoint https://gateway.marvel.com/
-- [] Layout da página
-- [] Visão geral personagem component
-- [] Barra de pesquisa
-- [] Dropdown de pesquisa
-- [] Visão especifica personagem component
-  - [] imagem
-  - [] nome/descrição
-  - [] slider?
+## Demonstração
+
+## Tecnologias utilizadas
+
+- [ReactJS 17.0](https://reactjs.org/)
+- [Styled Components 5.2](https://styled-components.com/)
+- [Axios 0.21](https://github.com/axios/axios)
+- [js-md5](https://www.npmjs.com/package/js-md5)
+
+## Instalação
