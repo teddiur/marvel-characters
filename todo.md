@@ -11,8 +11,11 @@
 
 - [x] gerar keys
 - [x] base endpoint https://gateway.marvel.com/
+- [] pegar personagens
 
 [] Layout da página
+
+- [] Logo
 
 [] Visão geral personagem component
 

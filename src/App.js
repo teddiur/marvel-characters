@@ -1,6 +1,7 @@
 import axios from 'axios';
 import md5 from 'js-md5';
 import { useState } from 'react';
+import * as C from './components';
 
 const api = axios.create({
   baseURL: 'https://gateway.marvel.com/v1/public/',
@@ -33,7 +34,7 @@ function App() {
   getCharacters(setLoading, setCharacters);
   console.log(characters);
   return (
-    <div className="App">
+    <C.Layout>
       {loading ? (
         <div>carregando</div>
       ) : (
@@ -41,7 +42,7 @@ function App() {
         // characters.map((char) => {
         //   return <div>{char.name}</div>;
       )}
-    </div>
+    </C.Layout>
   );
 }
 
