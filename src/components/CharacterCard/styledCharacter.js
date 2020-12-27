@@ -17,7 +17,6 @@ const NameBox = styled.div`
   width: 30%;
   padding: min(5px, 1%) min(5px, 1%);
   clip-path: polygon(5% 0%, 0% 100%, 95% 100%, 100% 0%);
-  /* transform: skew(-30deg); */
   background: white;
   overflow: hidden;
   white-space: nowrap;
