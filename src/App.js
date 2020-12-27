@@ -2,16 +2,24 @@ import axios from 'axios';
 import md5 from 'js-md5';
 import { useState, useEffect } from 'react';
 import * as C from './components';
+import styled from 'styled-components';
 
 const api = axios.create({
   baseURL: 'https://gateway.marvel.com/v1/public/',
 });
 
+const FlexWrapper = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  width: 100%;
+  justify-content: flex-start;
+`;
+
 function App() {
   const [loading, setLoading] = useState(false);
   const [characters, setCharacters] = useState([]);
 
-  async function getCharacters(setLoading, setCharacters) {
+  async function getCharacters() {
     const ts = new Date().getTime();
     const md5Hash = md5.create();
     md5Hash.update(
@@ -26,50 +34,42 @@ function App() {
       )
       .then((response) => {
         setLoading(false);
-        setCharacters(...response);
+        setCharacters((prevChars) => {
+          return removeDuplicates(
+            [...prevChars, ...response.data.data.results],
+            'id',
+          );
+        });
       })
-      .catch((err) => console.log('FUDEU', err));
+      .catch((err) => console.log('ERROR:', err));
     return characters;
   }
 
   useEffect(() => {
-    getCharacters(setLoading, setCharacters);
-    console.log(characters);
+    getCharacters();
     return;
   }, []);
 
-  const teste = {
-    data: {
-      results: [
-        {
-          id: 156234,
-          name: 'senhor incrivel',
-          comics: {
-            avaible: 13,
-            items: [
-              { resourceURI: 'uma uri', name: 'aventuras do sr incrivel' },
-            ],
-          },
-          thumbnail: {
-            path: 'http://i.annihil.us/u/prod/marvel/i/mg/3/40/4bb4680432f73',
-            extension: 'jpg',
-          },
-        },
-      ],
-    },
-  };
-
+  console.log('chars', characters);
   return (
     <C.Layout>
-      {loading ? (
-        <div>carregando</div>
-      ) : (
-        <C.CharacterCard data={teste.data.results[0]}></C.CharacterCard>
-        // characters.map((char) => {
-        //   return <div>{char.name}</div>;
+      {loading && <div>carregando</div>}
+      {characters && (
+        <FlexWrapper>
+          {characters.map((character, index) => (
+            <C.CharacterCard key={index} data={character}></C.CharacterCard>
+          ))}
+        </FlexWrapper>
       )}
     </C.Layout>
   );
 }
 
+function removeDuplicates(arr, prop) {
+  const propValues = arr.map((item) => item[prop]);
+  const uniques = arr.filter(
+    (element, index) => propValues.indexOf(element[prop]) === index,
+  );
+  return uniques;
+}
 export default App;

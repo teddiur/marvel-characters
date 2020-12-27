@@ -1,23 +1,24 @@
 ## To-do
 
-[] jest
-
-- [x] sintaxe/como usar
-- [] como aplicar no projeto? o que testar?
-
 [] infinite scroll
 
-[x] api https://developer.marvel.com/
+[] api https://developer.marvel.com/
 
 - [x] gerar keys
 - [x] base endpoint https://gateway.marvel.com/
-- [] pegar personagens
+- [x] pegar personagens
+- [] buscar por string
+- [] comics/novels/etc
 
-[] Layout da página
+[x] Layout da página
 
-- [] Logo
+- [x] Logo
+- [] diferenças se visão geral ou especifica
 
 [] Visão geral personagem component
+
+- [x] namebox component
+- [] infinite scroll
 
 [] Barra de pesquisa
 
