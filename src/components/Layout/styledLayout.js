@@ -13,6 +13,7 @@ const Header = styled.header`
 const Logo = styled.img`
   height: 85%;
   width: auto;
+  cursor: pointer;
 `;
 
 const Main = styled.main`

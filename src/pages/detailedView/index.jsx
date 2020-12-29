@@ -2,37 +2,42 @@ import { useEffect, useState } from 'react';
 import getMd5 from '../../services/md5';
 import api from '../../services/api';
 import { removeDuplicates } from '../../services/generalFunctions';
+import * as C from '../../components';
 import * as S from './styledPage';
-import { Portrait } from '../../components';
 
 function DetailedView(props) {
   const { speceficCharacter } = props;
   const { ts, md5Hash } = getMd5();
   const [material, setMaterial] = useState([]);
-  const [firstShown, setFirstShwon] = useState(0);
-
+  const [firstShown, setFirstShown] = useState(0);
+  const [types, setTypes] = useState([
+    { type: 'comics', hasMore: true },
+    { type: 'events', hasMore: true },
+    { type: 'series', hasMore: true },
+    { type: 'stories', hasMore: true },
+  ]);
   const type = 'comics';
   const baseURI = `characters/${speceficCharacter.id}/${type}?apikey=${process.env.REACT_APP_MARVEL_PUBLIC_KEY}&hash=${md5Hash}&ts=${ts}`;
 
-  async function getComics() {
+  async function getMaterial() {
     await api
       .get(baseURI)
       .then((response) => {
         const { results } = response.data.data;
-        console.log(material, 'before');
+        console.log(response, 'response');
         setMaterial((previous) =>
           removeDuplicates([...previous, ...results], 'id'),
         );
-        console.log(material, 'after', results);
+        // console.log(material, 'after', results);
       })
       .catch((err) => console.log(err));
   }
 
   useEffect(() => {
-    getComics();
+    getMaterial();
   }, []);
 
-  const materialShwon = material.slice(firstShown, 4);
+  const materialShown = material.slice(firstShown, firstShown + 4);
   const characterPortrait = `${speceficCharacter.thumbnail.path}/landscape_incredible.${speceficCharacter.thumbnail.extension}`;
 
   return (
@@ -44,7 +49,7 @@ function DetailedView(props) {
       padding="5% 0 0 0"
     >
       <S.FlexWrapper justify="flex-start" align="center" padding="0 0 40px 0">
-        <Portrait
+        <C.Portrait
           src={characterPortrait}
           alt={speceficCharacter.name}
           width="max(25%, 350px)"
@@ -57,17 +62,33 @@ function DetailedView(props) {
           <S.Text>{speceficCharacter.description}</S.Text>
         </S.FlexWrapper>
       </S.FlexWrapper>
-      <S.FlexWrapper justify="space-between">
-        {materialShwon.map((item) => {
+      <S.FlexWrapper justify="space-between" align="center" position="relative">
+        {materialShown.map((item, index) => {
           const materialImage = `${item.thumbnail.path}/portrait_fantastic.${item.thumbnail.extension}`;
           return (
-            <Portrait
-              key={materialImage}
-              src={materialImage}
-              alt={item.title}
-              width="max(15%, 200px)"
-              height="auto"
-            />
+            <>
+              {index === 0 && firstShown !== 0 && (
+                <C.CarouselButton
+                  onClick={setFirstShown}
+                  action="less"
+                >{`<`}</C.CarouselButton>
+              )}
+              <C.Portrait
+                key={materialImage}
+                src={materialImage}
+                alt={item.title}
+                width="max(15%, 200px)"
+                height="auto"
+                margin="0 10px"
+              />
+              {index + 1 === materialShown.length &&
+                firstShown + 4 <= material.length && (
+                  <C.CarouselButton
+                    onClick={setFirstShown}
+                    action="more"
+                  >{`>`}</C.CarouselButton>
+                )}
+            </>
           );
         })}
       </S.FlexWrapper>
