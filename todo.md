@@ -18,7 +18,7 @@
 [] Visão geral personagem component
 
 - [x] namebox component
-- [] infinite scroll
+- [x] infinite scroll
 
 [] Barra de pesquisa
 
@@ -26,6 +26,6 @@
 
 [] Visão especifica personagem component
 
-- [] imagem
-- [] nome/descrição
+- [x] imagem
+- [x] nome/descrição
 - [] slider?

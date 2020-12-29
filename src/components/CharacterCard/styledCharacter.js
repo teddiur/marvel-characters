@@ -8,6 +8,7 @@ const CardImage = styled.div`
   width: 50%;
   height: 30vh;
   position: relative;
+  cursor: pointer;
   @media (max-width: 650px) {
     width: 100%;
   }
