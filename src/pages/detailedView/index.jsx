@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import getMd5 from '../../services/md5';
 import api from '../../services/api';
 import {
@@ -7,62 +7,18 @@ import {
 } from '../../services/generalFunctions';
 import * as C from '../../components';
 import * as S from './styledPage';
-function checkTypes(character, params) {
-  const types = [
-    { type: 'comics', hasMore: true },
-    { type: 'events', hasMore: true },
-    { type: 'series', hasMore: true },
-    { type: 'stories', hasMore: true },
-  ];
-  const results = [];
-  types.forEach((item) => {
-    try {
-      if (character[item.type].available > 0) {
-        results.push(item);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  });
 
-  return results;
-}
 function DetailedView(props) {
   const { speceficCharacter } = props;
 
   const [material, setMaterial] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
   const [offset, setOffset] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
   const [firstShown, setFirstShown] = useState(0);
-  const [types, setTypes] = useState([{ type: 'comics', hasMore: true }]);
-
-  useEffect(() => {
-    setTypes(checkTypes(speceficCharacter));
-  }, [speceficCharacter]);
-  // const [total, setTotal] = useState(0);
-
-  const getMaterial = async (offset, material) => {
-    const { ts, md5Hash } = getMd5();
-    const { type } = material;
-
-    await api
-      .get(
-        `characters/${speceficCharacter.id}/${type}?offset=${offset}&ts=${ts}&apikey=${process.env.REACT_APP_MARVEL_PUBLIC_KEY}&hash=${md5Hash}`,
-      )
-      .then((response) => {
-        const { results, total } = response.data.data;
-        const theresMore = material.length < total;
-
-        setLoading(false);
-        setMaterial((prevChars) => {
-          return removeDuplicates([...prevChars, ...results], 'id');
-        });
-
-        setHasMore(theresMore);
-      })
-      .catch((err) => console.log('ERROR:', err));
-  };
+  const [types, setTypes] = useState(checkTypes(speceficCharacter));
+  const total = useRef(0);
+  const id = useRef(speceficCharacter.id);
 
   //deals with material shown
   const { width } = useWindowDimensions();
@@ -70,18 +26,52 @@ function DetailedView(props) {
   const materialShown = material.slice(firstShown, lastShown);
   const characterPortrait = `${speceficCharacter.thumbnail.path}/landscape_incredible.${speceficCharacter.thumbnail.extension}`;
 
+  if (total.current === 0) {
+    types.forEach((type) => {
+      total.current = Number(total.current) + type.available;
+    });
+  }
+
+  const getMaterial = useCallback(
+    async (offset, id) => {
+      const { ts, md5Hash } = getMd5();
+      const { type } = types[0];
+      await api
+        .get(
+          `characters/${id}/${type}?offset=${offset}&ts=${ts}&apikey=${process.env.REACT_APP_MARVEL_PUBLIC_KEY}&hash=${md5Hash}`,
+        )
+        .then((response) => {
+          const { results, total } = response.data.data;
+          const theresMore = material.length < total;
+
+          setLoading(false);
+          setMaterial((prevChars) => {
+            return removeDuplicates([...prevChars, ...results], 'id');
+          });
+          setHasMore(theresMore);
+        })
+        .catch((err) => console.log('ERROR:', err));
+    },
+    [types], //eslint-disable-line
+  );
+
   useEffect(() => {
-    if (lastShown < material.length) {
+    if (lastShown < material.length) return;
+
+    if (hasMore) setOffset((previous) => previous + 20);
+    else if (material.length > 0 && types.length > 0) {
+      setTypes((prev) => prev.slice(1));
+      setOffset(0);
+    } else {
       return;
     }
-    if (hasMore) setOffset((previous) => previous + 20);
-    else {
-      setTypes((types) => types.slice(1));
-      setOffset(0);
-    }
+
     setLoading(true);
-    getMaterial(offset, types[0]);
-  }, [lastShown]); // eslint-disable-line
+  }, [lastShown, hasMore]); //eslint-disable-line
+
+  useEffect(() => {
+    getMaterial(offset, id);
+  }, [getMaterial, offset, id]);
 
   return (
     <S.FlexWrapper
@@ -133,7 +123,7 @@ function DetailedView(props) {
                 margin="0 10px"
               />
               {index + 1 === materialShown.length &&
-                lastShown + 1 <= material.length && (
+                lastShown + 1 <= total.current && (
                   <C.CarouselButton
                     key="lastShown"
                     onClick={setFirstShown}
@@ -155,4 +145,28 @@ function getLastShown(width, firstShown) {
     Math.floor(boxWidth / 250) < 1 ? 1 : Math.floor(boxWidth / 250);
   return firstShown + increment;
 }
+
+function checkTypes(character) {
+  const types = [
+    { type: 'comics', hasMore: true },
+    { type: 'events', hasMore: true },
+    { type: 'series', hasMore: true },
+    { type: 'stories', hasMore: true },
+  ];
+  const results = [];
+  types.forEach((item) => {
+    try {
+      if (character[item.type].available > 0) {
+        results.push({
+          type: item.type,
+          available: Number(character[item.type].available),
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
+  return results;
+}
+
 export { DetailedView };
