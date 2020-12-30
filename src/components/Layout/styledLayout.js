@@ -19,5 +19,6 @@ const Main = styled.main`
   height: 100%;
   width: 100%;
   background-image: linear-gradient(0deg, #090e12, #16212a);
+  padding: 0 0 2% 0;
 `;
 export { Header, Logo, Main };
