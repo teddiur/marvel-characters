@@ -68,12 +68,13 @@ function DetailedView(props) {
     } else {
       return;
     }
-
-    setLoading(true);
   }, [lastShown, hasMore]); //eslint-disable-line
 
   useEffect(() => {
-    if (types) getMaterial(offset, id);
+    if (types) {
+      setLoading(true);
+      getMaterial(offset, id);
+    }
   }, [getMaterial, offset, id, types]);
 
   useEffect(() => {
