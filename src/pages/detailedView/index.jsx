@@ -12,43 +12,47 @@ function DetailedView(props) {
   const { speceficCharacter } = props;
 
   const [material, setMaterial] = useState([]);
+  const [thumbMaterial, setThumbMaterial] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(false);
   const [offset, setOffset] = useState(0);
   const [firstShown, setFirstShown] = useState(0);
   const [types, setTypes] = useState(checkTypes(speceficCharacter));
-  const total = useRef(0);
+  const totalMaterial = useRef(0);
   const id = useRef(speceficCharacter.id);
 
   //deals with material shown
   const { width } = useWindowDimensions();
   const lastShown = getLastShown(width, firstShown);
-  const materialShown = material.slice(firstShown, lastShown);
+  const materialShown = thumbMaterial.slice(firstShown, lastShown);
   const characterPortrait = `${speceficCharacter.thumbnail.path}/landscape_incredible.${speceficCharacter.thumbnail.extension}`;
 
-  if (total.current === 0) {
+  if (totalMaterial.current === 0) {
     types.forEach((type) => {
-      total.current = Number(total.current) + type.available;
+      totalMaterial.current = Number(totalMaterial.current) + type.available;
     });
   }
 
   const getMaterial = useCallback(
     async (offset, id) => {
       const { ts, md5Hash } = getMd5();
-      const { type } = types[0];
+      let type = 'comics';
+      if (types[0]) type = types[0].type;
+      else return;
       await api
         .get(
-          `characters/${id}/${type}?offset=${offset}&ts=${ts}&apikey=${process.env.REACT_APP_MARVEL_PUBLIC_KEY}&hash=${md5Hash}`,
+          `characters/${id.current}/${type}?offset=${offset}&ts=${ts}&apikey=${process.env.REACT_APP_MARVEL_PUBLIC_KEY}&hash=${md5Hash}`,
         )
         .then((response) => {
           const { results, total } = response.data.data;
-          const theresMore = material.length < total;
 
           setLoading(false);
           setMaterial((prevChars) => {
-            return removeDuplicates([...prevChars, ...results], 'id');
+            const unique = removeDuplicates([...prevChars, ...results], 'id');
+            const theresMore = unique.length < total;
+            setHasMore(theresMore);
+            return unique;
           });
-          setHasMore(theresMore);
         })
         .catch((err) => console.log('ERROR:', err));
     },
@@ -56,8 +60,7 @@ function DetailedView(props) {
   );
 
   useEffect(() => {
-    if (lastShown < material.length) return;
-
+    if (lastShown < thumbMaterial.length) return;
     if (hasMore) setOffset((previous) => previous + 20);
     else if (material.length > 0 && types.length > 0) {
       setTypes((prev) => prev.slice(1));
@@ -70,8 +73,17 @@ function DetailedView(props) {
   }, [lastShown, hasMore]); //eslint-disable-line
 
   useEffect(() => {
-    getMaterial(offset, id);
-  }, [getMaterial, offset, id]);
+    if (types) getMaterial(offset, id);
+  }, [getMaterial, offset, id, types]);
+
+  useEffect(() => {
+    setThumbMaterial(() => {
+      const uniqueWithThumbnails = material.filter((item) => {
+        return item.thumbnail;
+      });
+      return uniqueWithThumbnails;
+    });
+  }, [material]);
 
   return (
     <S.FlexWrapper
@@ -103,37 +115,35 @@ function DetailedView(props) {
         </S.FlexWrapper>
       </S.FlexWrapper>
       <S.FlexWrapper justify="space-between" align="center" position="relative">
+        {firstShown !== 0 && (
+          <C.CarouselButton
+            key="firstShown"
+            onClick={setFirstShown}
+            action="less"
+          >{`<`}</C.CarouselButton>
+        )}
         {materialShown.map((item, index) => {
-          const materialImage = `${item.thumbnail.path}/portrait_fantastic.${item.thumbnail.extension}`;
           return (
             <>
-              {index === 0 && firstShown !== 0 && (
-                <C.CarouselButton
-                  key="firstShown"
-                  onClick={setFirstShown}
-                  action="less"
-                >{`<`}</C.CarouselButton>
-              )}
               <C.Portrait
-                key={materialImage}
-                src={materialImage}
+                key={index}
+                src={`${item.thumbnail.path}/portrait_fantastic.${item.thumbnail.extension}`}
                 alt={item.title}
                 width="max(15%, 200px)"
                 height="auto"
                 margin="0 10px"
               />
-              {index + 1 === materialShown.length &&
-                lastShown + 1 <= total.current && (
-                  <C.CarouselButton
-                    key="lastShown"
-                    onClick={setFirstShown}
-                    action="more"
-                  >{`>`}</C.CarouselButton>
-                )}
-              {loading && <p>loading</p>}
             </>
           );
         })}
+        {lastShown + 1 <= thumbMaterial.length && (
+          <C.CarouselButton
+            key="lastShown"
+            onClick={setFirstShown}
+            action="more"
+          >{`>`}</C.CarouselButton>
+        )}
+        {loading && <p>loading</p>}
       </S.FlexWrapper>
     </S.FlexWrapper>
   );
