@@ -48,7 +48,6 @@ const GeneralView = (props) => {
         });
 
         setHasMore(theresMore);
-        console.log(characters);
       })
       .catch((err) => console.log('ERROR:', err));
   };

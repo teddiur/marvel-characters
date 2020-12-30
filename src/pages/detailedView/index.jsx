@@ -1,44 +1,87 @@
 import { useEffect, useState } from 'react';
 import getMd5 from '../../services/md5';
 import api from '../../services/api';
-import { removeDuplicates } from '../../services/generalFunctions';
+import {
+  removeDuplicates,
+  useWindowDimensions,
+} from '../../services/generalFunctions';
 import * as C from '../../components';
 import * as S from './styledPage';
-
-function DetailedView(props) {
-  const { speceficCharacter } = props;
-  const { ts, md5Hash } = getMd5();
-  const [material, setMaterial] = useState([]);
-  const [firstShown, setFirstShown] = useState(0);
-  const [types, setTypes] = useState([
+function checkTypes(character, params) {
+  const types = [
     { type: 'comics', hasMore: true },
     { type: 'events', hasMore: true },
     { type: 'series', hasMore: true },
     { type: 'stories', hasMore: true },
-  ]);
-  const type = 'comics';
-  const baseURI = `characters/${speceficCharacter.id}/${type}?apikey=${process.env.REACT_APP_MARVEL_PUBLIC_KEY}&hash=${md5Hash}&ts=${ts}`;
+  ];
+  const results = [];
+  types.forEach((item) => {
+    try {
+      if (character[item.type].available > 0) {
+        results.push(item);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
 
-  async function getMaterial() {
-    await api
-      .get(baseURI)
-      .then((response) => {
-        const { results } = response.data.data;
-        console.log(response, 'response');
-        setMaterial((previous) =>
-          removeDuplicates([...previous, ...results], 'id'),
-        );
-        // console.log(material, 'after', results);
-      })
-      .catch((err) => console.log(err));
-  }
+  return results;
+}
+function DetailedView(props) {
+  const { speceficCharacter } = props;
+
+  const [material, setMaterial] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [firstShown, setFirstShown] = useState(0);
+  const [types, setTypes] = useState([{ type: 'comics', hasMore: true }]);
 
   useEffect(() => {
-    getMaterial();
-  }, []);
+    setTypes(checkTypes(speceficCharacter));
+  }, [speceficCharacter]);
+  // const [total, setTotal] = useState(0);
 
-  const materialShown = material.slice(firstShown, firstShown + 4);
+  const getMaterial = async (offset, material) => {
+    const { ts, md5Hash } = getMd5();
+    const { type } = material;
+
+    await api
+      .get(
+        `characters/${speceficCharacter.id}/${type}?offset=${offset}&ts=${ts}&apikey=${process.env.REACT_APP_MARVEL_PUBLIC_KEY}&hash=${md5Hash}`,
+      )
+      .then((response) => {
+        const { results, total } = response.data.data;
+        const theresMore = material.length < total;
+
+        setLoading(false);
+        setMaterial((prevChars) => {
+          return removeDuplicates([...prevChars, ...results], 'id');
+        });
+
+        setHasMore(theresMore);
+      })
+      .catch((err) => console.log('ERROR:', err));
+  };
+
+  //deals with material shown
+  const { width } = useWindowDimensions();
+  const lastShown = getLastShown(width, firstShown);
+  const materialShown = material.slice(firstShown, lastShown);
   const characterPortrait = `${speceficCharacter.thumbnail.path}/landscape_incredible.${speceficCharacter.thumbnail.extension}`;
+
+  useEffect(() => {
+    if (lastShown < material.length) {
+      return;
+    }
+    if (hasMore) setOffset((previous) => previous + 20);
+    else {
+      setTypes((types) => types.slice(1));
+      setOffset(0);
+    }
+    setLoading(true);
+    getMaterial(offset, types[0]);
+  }, [lastShown]); // eslint-disable-line
 
   return (
     <S.FlexWrapper
@@ -48,18 +91,25 @@ function DetailedView(props) {
       width="80%"
       padding="5% 0 0 0"
     >
-      <S.FlexWrapper justify="flex-start" align="center" padding="0 0 40px 0">
+      <S.FlexWrapper
+        justify="flex-start"
+        direction={width > 850 ? 'row' : 'column'}
+        align="center"
+        padding="0 0 40px 0"
+      >
         <C.Portrait
           src={characterPortrait}
           alt={speceficCharacter.name}
-          width="max(25%, 350px)"
-          height="max(25%, 350px)"
+          width="clamp(25%, 350px, 100%)"
+          height="auto"
         />
         <S.FlexWrapper direction="column" justify="center" marginLeft="15px">
           <S.SubTitle>Name:</S.SubTitle>
           <S.Text>{speceficCharacter.name}</S.Text>
           <S.SubTitle>Description:</S.SubTitle>
-          <S.Text>{speceficCharacter.description}</S.Text>
+          <S.Text>
+            {speceficCharacter.description || 'Description not available.'}
+          </S.Text>
         </S.FlexWrapper>
       </S.FlexWrapper>
       <S.FlexWrapper justify="space-between" align="center" position="relative">
@@ -69,6 +119,7 @@ function DetailedView(props) {
             <>
               {index === 0 && firstShown !== 0 && (
                 <C.CarouselButton
+                  key="firstShown"
                   onClick={setFirstShown}
                   action="less"
                 >{`<`}</C.CarouselButton>
@@ -82,12 +133,14 @@ function DetailedView(props) {
                 margin="0 10px"
               />
               {index + 1 === materialShown.length &&
-                firstShown + 4 <= material.length && (
+                lastShown + 1 <= material.length && (
                   <C.CarouselButton
+                    key="lastShown"
                     onClick={setFirstShown}
                     action="more"
                   >{`>`}</C.CarouselButton>
                 )}
+              {loading && <p>loading</p>}
             </>
           );
         })}
@@ -96,4 +149,10 @@ function DetailedView(props) {
   );
 }
 
+function getLastShown(width, firstShown) {
+  const boxWidth = width - 210;
+  const increment =
+    Math.floor(boxWidth / 250) < 1 ? 1 : Math.floor(boxWidth / 250);
+  return firstShown + increment;
+}
 export { DetailedView };
