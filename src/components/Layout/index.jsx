@@ -12,6 +12,7 @@ const Layout = ({ onClick, children }) => {
   };
   const [inputRef, setInputFocus] = useFocus();
   const [query, setQuery] = useState('');
+  const search = `nameStartsWith=${query}`;
   console.log(inputRef);
   return (
     <S.Wrapper>
@@ -37,17 +38,20 @@ const Layout = ({ onClick, children }) => {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <circle cx="17.5" cy="17.5" r="16" strokeWidth="3" />
+            <circle cx="17.5" cy="17.5" r="16" strokeWidth="5" />
             <line
               x1="29.0399"
               y1="27.9186"
               x2="46.7176"
               y2="45.5963"
-              strokeWidth="3"
+              strokeWidth="5"
             />
           </svg>
           <span>X</span>
         </S.Searchbar>
+        <S.ResultsContainer>
+          <S.Result>{search}</S.Result>
+        </S.ResultsContainer>
       </S.Header>
       <S.Main>{children}</S.Main>
     </S.Wrapper>

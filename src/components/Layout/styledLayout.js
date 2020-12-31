@@ -68,4 +68,16 @@ const Searchbar = styled.div`
     }
   }
 `;
-export { Header, Logo, Main, Wrapper, Searchbar };
+
+const ResultsContainer = styled.div`
+  max-width: 25%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+`;
+const Result = styled.div`
+  background-color: #3d3e42;
+  height: 5vh;
+  width: 100%;
+`;
+export { Header, Logo, Main, Wrapper, Searchbar, ResultsContainer, Result };

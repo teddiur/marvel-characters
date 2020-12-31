@@ -7,7 +7,7 @@ import * as S from './styledPage';
 
 const GeneralView = (props) => {
   const { characters, setCharacters, setSpecificCharacter } = props;
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef();
