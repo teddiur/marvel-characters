@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import * as C from './components';
 import * as P from './pages';
+import * as S from './pages/generalView/styledPage';
 
 function App() {
   const [characters, setCharacters] = useState([]);
@@ -17,17 +18,11 @@ function App() {
           setSpecificCharacter={setSpecificCharacter}
         />
       )}
-      <p
-        style={{
-          color: 'white',
-          right: 'auto',
-          left: 'auto',
-          bottom: '0',
-          position: 'absolute',
-        }}
-      >
-        Data provided by Marvel. © 2020 MARVEL
-      </p>
+      <S.FlexWrapper justify="center">
+        <S.DisclaimerText>
+          Data provided by Marvel. © 2020 MARVEL
+        </S.DisclaimerText>
+      </S.FlexWrapper>
     </C.Layout>
   );
 }

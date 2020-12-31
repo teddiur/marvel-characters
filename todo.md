@@ -2,19 +2,20 @@
 
 [x] infinite scroll
 
-[x] api https://developer.marvel.com/
+[] api https://developer.marvel.com/
 
 - [x] gerar keys
 - [x] base endpoint https://gateway.marvel.com/
 - [x] pegar personagens
 - [x] comics/novels/etc
+- [] pesquisar por string
 
 [x] Layout da página
 
 - [x] Logo
 - [x] diferenças se visão geral ou especifica
 
-[] Visão geral personagem component
+[x] Visão geral personagem component
 
 - [x] namebox component
 - [x] infinite scroll
@@ -23,10 +24,10 @@
 
 [] Dropdown de pesquisa
 
-[] Visão especifica personagem component
+[x] Visão especifica personagem component
 
 - [x] imagem
 - [x] nome/descrição
 - [x] carousel
 - [x] responsivo
-- [] pegar todos os materiais
+- [x] pegar todos os materiais

@@ -60,7 +60,7 @@ const GeneralView = (props) => {
   return (
     <>
       {characters && (
-        <S.FlexWrapper>
+        <S.FlexWrapper justify="flex-start">
           {characters.map((character, index) => {
             if (characters.length === index + 1) {
               return (
