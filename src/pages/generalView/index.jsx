@@ -56,7 +56,7 @@ const GeneralView = (props) => {
     setLoading(true);
     getCharacters(offset);
   }, [offset]); // eslint-disable-line
-  console.log(process.env.REACT_APP_MARVEL_PUBLIC_KEY);
+  console.log(process.env);
   return (
     <>
       {characters && (
