@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 const Header = styled.header`
-  height: 8%;
+  height: clamp(40px, 8vh, 70px);
+  background-color: white;
   width: 100%;
-  min-height: 40px;
   background: black;
   display: flex;
   justify-content: center;
@@ -21,5 +21,15 @@ const Main = styled.main`
   width: 100%;
   background-image: linear-gradient(0deg, #090e12, #16212a);
   padding: 0 0 2% 0;
+  flex-grow: 1;
 `;
-export { Header, Logo, Main };
+
+const Wrapper = styled.div`
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+`;
+export { Header, Logo, Main, Wrapper };

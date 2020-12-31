@@ -60,7 +60,7 @@ const GeneralView = (props) => {
   return (
     <>
       {characters && (
-        <S.FlexWrapper>
+        <S.FlexWrapper justify="flex-start">
           {characters.map((character, index) => {
             if (characters.length === index + 1) {
               return (
@@ -84,7 +84,11 @@ const GeneralView = (props) => {
               );
             }
           })}
-          {loading && <div>carregando</div>}
+        </S.FlexWrapper>
+      )}
+      {loading && (
+        <S.FlexWrapper justify="center" width="100%" padding="5% 0 0 0">
+          <C.Loading />
         </S.FlexWrapper>
       )}
     </>
