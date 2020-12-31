@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://gateway.marvel.com/v1/public/',
+  baseURL: 'https://gateway.marvel.com:443/v1/public/',
 });
-
-export { api };
+export default api;

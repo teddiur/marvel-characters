@@ -8,5 +8,6 @@ html, body, #root {
   padding: 0;
   margin: 0;
   font-family: 'Mukta', sans-serif;
+  font-size: 10px;
 }`;
 export { GlobalStyle };

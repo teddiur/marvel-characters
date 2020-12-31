@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import md5 from 'js-md5';
-import { api } from '../../services/api';
+import api from '../../services/api';
+import getMd5 from '../../services/md5';
+import { removeDuplicates } from '../../services/generalFunctions';
 import * as C from '../../components';
 import * as S from './styledPage';
 
-const GeneralView = () => {
-  const [characters, setCharacters] = useState([]);
+const GeneralView = (props) => {
+  const { characters, setCharacters, setSpecificCharacter } = props;
   const [loading, setLoading] = useState(false);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -31,31 +32,24 @@ const GeneralView = () => {
   );
 
   const getCharacters = async (offset) => {
-    const ts = new Date().getTime();
-    const md5Hash = md5.create();
-    md5Hash.update(
-      ts +
-        process.env.REACT_APP_MARVEL_PRIVATE_KEY +
-        process.env.REACT_APP_MARVEL_PUBLIC_KEY,
-    );
+    const { ts, md5Hash } = getMd5();
 
-    const chars = await api
+    await api
       .get(
         `characters?offset=${offset}&ts=${ts}&apikey=${process.env.REACT_APP_MARVEL_PUBLIC_KEY}&hash=${md5Hash}`,
       )
       .then((response) => {
         const { results, total } = response.data.data;
         const theresMore = characters.length < total;
+
         setLoading(false);
         setCharacters((prevChars) => {
           return removeDuplicates([...prevChars, ...results], 'id');
         });
 
         setHasMore(theresMore);
-        console.log(characters);
       })
       .catch((err) => console.log('ERROR:', err));
-    return chars;
   };
 
   useEffect(() => {
@@ -71,6 +65,10 @@ const GeneralView = () => {
             if (characters.length === index + 1) {
               return (
                 <C.CharacterCard
+                  onClick={() => {
+                    console.log('oi', index);
+                    setSpecificCharacter(character);
+                  }}
                   ref={lastLoadedChar}
                   key={index}
                   data={character}
@@ -78,7 +76,11 @@ const GeneralView = () => {
               );
             } else {
               return (
-                <C.CharacterCard key={index} data={character}></C.CharacterCard>
+                <C.CharacterCard
+                  onClick={() => setSpecificCharacter(character)}
+                  key={index}
+                  data={character}
+                ></C.CharacterCard>
               );
             }
           })}
@@ -89,11 +91,4 @@ const GeneralView = () => {
   );
 };
 
-function removeDuplicates(arr, prop) {
-  const propValues = arr.map((item) => item[prop]);
-  const uniques = arr.filter(
-    (element, index) => propValues.indexOf(element[prop]) === index,
-  );
-  return uniques;
-}
 export { GeneralView };

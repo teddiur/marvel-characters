@@ -13,10 +13,11 @@ const Header = styled.header`
 const Logo = styled.img`
   height: 85%;
   width: auto;
+  cursor: pointer;
 `;
 
 const Main = styled.main`
-  height: 100%;
+  min-height: 100%;
   width: 100%;
   background-image: linear-gradient(0deg, #090e12, #16212a);
   padding: 0 0 2% 0;
