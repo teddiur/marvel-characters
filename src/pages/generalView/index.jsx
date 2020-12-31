@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import api from '../../services/api';
-import getMd5 from '../../services/md5';
+// import getMd5 from '../../services/md5';
 import { removeDuplicates } from '../../services/generalFunctions';
 import * as C from '../../components';
 import * as S from './styledPage';
@@ -31,30 +31,24 @@ const GeneralView = (props) => {
     [loading, hasMore],
   );
 
-  const getCharacters = async (offset) => {
-    const { ts, md5Hash } = getMd5();
+  const makeRequest = async (offset) => {
+    const beforeQ = 'characters';
 
-    await api
-      .get(
-        `characters?offset=${offset}&ts=${ts}&apikey=${process.env.REACT_APP_MARVEL_PUBLIC_KEY}&hash=${md5Hash}`,
-      )
-      .then((response) => {
-        const { results, total } = response.data.data;
-        const theresMore = characters.length < total;
+    const response = await api(offset, beforeQ, '');
+    const { results, total } = response.data.data;
+    const theresMore = characters.length < total;
 
-        setLoading(false);
-        setCharacters((prevChars) => {
-          return removeDuplicates([...prevChars, ...results], 'id');
-        });
+    setLoading(false);
+    setCharacters((prevChars) => {
+      return removeDuplicates([...prevChars, ...results], 'id');
+    });
 
-        setHasMore(theresMore);
-      })
-      .catch((err) => console.log('ERROR:', err));
+    setHasMore(theresMore);
   };
 
   useEffect(() => {
     setLoading(true);
-    getCharacters(offset);
+    makeRequest(offset);
   }, [offset]); // eslint-disable-line
 
   return (

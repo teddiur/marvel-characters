@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { MarvelLogo } from '../../assets/index';
 import * as S from './styledLayout';
+import * as C from '../';
 
 const Layout = ({ onClick, children }) => {
   const useFocus = () => {
@@ -49,10 +50,8 @@ const Layout = ({ onClick, children }) => {
           </svg>
           <span>X</span>
         </S.Searchbar>
-        <S.ResultsContainer>
-          <S.Result>{search}</S.Result>
-        </S.ResultsContainer>
       </S.Header>
+      <C.Results search={search} />
       <S.Main>{children}</S.Main>
     </S.Wrapper>
   );

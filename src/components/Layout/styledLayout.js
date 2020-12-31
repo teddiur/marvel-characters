@@ -22,6 +22,10 @@ const Main = styled.main`
   background-image: linear-gradient(0deg, #090e12, #16212a);
   padding: 0 0 2% 0;
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Wrapper = styled.div`
@@ -68,16 +72,4 @@ const Searchbar = styled.div`
     }
   }
 `;
-
-const ResultsContainer = styled.div`
-  max-width: 25%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-`;
-const Result = styled.div`
-  background-color: #3d3e42;
-  height: 5vh;
-  width: 100%;
-`;
-export { Header, Logo, Main, Wrapper, Searchbar, ResultsContainer, Result };
+export { Header, Logo, Main, Wrapper, Searchbar };

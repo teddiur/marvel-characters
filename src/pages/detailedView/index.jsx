@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import getMd5 from '../../services/md5';
+// import getMd5 from '../../services/md5';
 import api from '../../services/api';
 import {
   removeDuplicates,
@@ -21,7 +21,7 @@ function DetailedView(props) {
   const totalMaterial = useRef(0);
   const id = useRef(speceficCharacter.id);
 
-  // //deals with material shown
+  //deals with material shown
   const { width } = useWindowDimensions();
   const lastShown = getLastShown(width, firstShown);
   const materialShown = thumbMaterial.slice(firstShown, lastShown);
@@ -33,30 +33,25 @@ function DetailedView(props) {
     });
   }
 
-  const getMaterial = useCallback(
+  const makeRequest = useCallback(
     async (offset, id) => {
-      const { ts, md5Hash } = getMd5();
       let type = 'comics';
       if (types[0]) type = types[0].type;
       else return;
-      await api
-        .get(
-          `characters/${id.current}/${type}?offset=${offset}&ts=${ts}&apikey=${process.env.REACT_APP_MARVEL_PUBLIC_KEY}&hash=${md5Hash}`,
-        )
-        .then((response) => {
-          const { results, total } = response.data.data;
 
-          setLoading(false);
-          setMaterial((prevChars) => {
-            const unique = removeDuplicates([...prevChars, ...results], 'id');
-            const theresMore = unique.length < total;
-            setHasMore(theresMore);
-            return unique;
-          });
-        })
-        .catch((err) => console.log('ERROR:', err));
+      const beforeQ = `characters/${id.current}/${type}`;
+      const response = await api(offset, beforeQ, '');
+      const { results, total } = response.data.data;
+
+      setLoading(false);
+      setMaterial((prevChars) => {
+        const unique = removeDuplicates([...prevChars, ...results], 'id');
+        const theresMore = unique.length < total;
+        setHasMore(theresMore);
+        return unique;
+      });
     },
-    [types], //eslint-disable-line
+    [types],
   );
 
   useEffect(() => {
@@ -73,9 +68,9 @@ function DetailedView(props) {
   useEffect(() => {
     if (types) {
       setLoading(true);
-      getMaterial(offset, id);
+      makeRequest(offset, id);
     }
-  }, [getMaterial, offset, id, types]);
+  }, [makeRequest, offset, id, types]);
 
   useEffect(() => {
     setThumbMaterial(() => {
@@ -85,15 +80,9 @@ function DetailedView(props) {
       return uniqueWithThumbnails;
     });
   }, [material]);
-
+  console.log(thumbMaterial);
   return (
-    <S.FlexWrapper
-      direction="column"
-      marginLeft="auto"
-      marginRight="auto"
-      width="80%"
-      padding="5% 0 0 0"
-    >
+    <S.FlexWrapper direction="column" width="80%" padding="5% 0 0 0">
       <S.FlexWrapper
         justify="flex-start"
         direction={width > 850 ? 'row' : 'column'}
@@ -124,16 +113,19 @@ function DetailedView(props) {
           >{`<`}</C.CarouselButton>
         )}
         {materialShown.map((item, index) => {
+          console.log(`url${index}`, item.urls);
           return (
             <>
-              <C.Portrait
-                key={index}
-                src={`${item.thumbnail.path}/portrait_fantastic.${item.thumbnail.extension}`}
-                alt={item.title}
-                width="max(15%, 200px)"
-                height="auto"
-                margin="0 10px"
-              />
+              <S.Link href={item.urls[0].url}>
+                <C.Portrait
+                  key={index}
+                  src={`${item.thumbnail.path}/portrait_fantastic.${item.thumbnail.extension}`}
+                  alt={item.title}
+                  width="100%"
+                  height="auto"
+                  // margin="0 10px"
+                />
+              </S.Link>
             </>
           );
         })}
