@@ -3,7 +3,7 @@ import * as S from './styledLayout';
 
 const Layout = ({ onClick, children }) => {
   return (
-    <>
+    <S.Wrapper>
       <S.Header>
         <S.Logo
           onClick={() => onClick(null)}
@@ -12,7 +12,7 @@ const Layout = ({ onClick, children }) => {
         />
       </S.Header>
       <S.Main>{children}</S.Main>
-    </>
+    </S.Wrapper>
   );
 };
 export { Layout };

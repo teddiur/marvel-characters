@@ -84,7 +84,11 @@ const GeneralView = (props) => {
               );
             }
           })}
-          {loading && <div>carregando</div>}
+        </S.FlexWrapper>
+      )}
+      {loading && (
+        <S.FlexWrapper justify="center" width="100%" padding="5% 0 0 0">
+          <C.Loading />
         </S.FlexWrapper>
       )}
     </>

@@ -13,7 +13,7 @@ function DetailedView(props) {
 
   const [material, setMaterial] = useState([]);
   const [thumbMaterial, setThumbMaterial] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [offset, setOffset] = useState(0);
   const [firstShown, setFirstShown] = useState(0);
@@ -21,7 +21,7 @@ function DetailedView(props) {
   const totalMaterial = useRef(0);
   const id = useRef(speceficCharacter.id);
 
-  //deals with material shown
+  // //deals with material shown
   const { width } = useWindowDimensions();
   const lastShown = getLastShown(width, firstShown);
   const materialShown = thumbMaterial.slice(firstShown, lastShown);
@@ -144,7 +144,7 @@ function DetailedView(props) {
             action="more"
           >{`>`}</C.CarouselButton>
         )}
-        {loading && <p>loading</p>}
+        {loading && <C.Loading />}
       </S.FlexWrapper>
     </S.FlexWrapper>
   );
