@@ -22,7 +22,7 @@
 
 [] Barra de pesquisa
 
-[] Dropdown de pesquisa
+[x] Dropdown de pesquisa
 
 [x] Visão especifica personagem component
 

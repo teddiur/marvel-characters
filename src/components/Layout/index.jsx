@@ -4,17 +4,15 @@ import * as S from './styledLayout';
 import * as C from '../';
 
 const Layout = ({ onClick, children }) => {
-  const useFocus = () => {
-    const htmlElRef = useRef(null);
-    const setFocus = () => {
-      htmlElRef.current && htmlElRef.current.focus();
-    };
-    return [htmlElRef, setFocus];
-  };
   const [inputRef, setInputFocus] = useFocus();
+  const [offset, setOffset] = useState(0);
   const [query, setQuery] = useState('');
-  const search = `nameStartsWith=${query}`;
-  console.log(inputRef);
+
+  function handleInput(event) {
+    setQuery(event.target.value);
+    setOffset(0);
+  }
+
   return (
     <S.Wrapper>
       <S.Header>
@@ -27,8 +25,7 @@ const Layout = ({ onClick, children }) => {
           <input
             ref={inputRef}
             onChange={(event) => {
-              setQuery(event.target.value);
-              console.log(inputRef);
+              handleInput(event);
             }}
           />
           <svg
@@ -51,9 +48,18 @@ const Layout = ({ onClick, children }) => {
           <span>X</span>
         </S.Searchbar>
       </S.Header>
-      <C.Results search={search} />
+      <C.Results query={query} offset={offset} setOffset={setOffset} />
       <S.Main>{children}</S.Main>
     </S.Wrapper>
   );
 };
+
+function useFocus() {
+  const htmlElRef = useRef(null);
+  const setFocus = () => {
+    htmlElRef.current && htmlElRef.current.focus();
+  };
+  return [htmlElRef, setFocus];
+}
+
 export { Layout };

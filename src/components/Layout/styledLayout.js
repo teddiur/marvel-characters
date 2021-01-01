@@ -38,7 +38,7 @@ const Wrapper = styled.div`
 `;
 
 const Searchbar = styled.div`
-  max-width: 25%;
+  width: clamp(15%, 200px, 25%);
   box-sizing: border-box;
   position: absolute;
   right: 2%;

@@ -9,6 +9,8 @@ const GeneralView = (props) => {
   const { characters, setCharacters, setSpecificCharacter } = props;
   const [loading, setLoading] = useState(true);
   const [offset, setOffset] = useState(0);
+  const cancel = useRef(() => console.log('ref'));
+
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef();
 
@@ -32,9 +34,10 @@ const GeneralView = (props) => {
   );
 
   const makeRequest = async (offset) => {
-    const beforeQ = 'characters';
+    const url = 'characters';
 
-    const response = await api(offset, beforeQ, '');
+    const response = await api(offset, url, '', cancel);
+    // console.log(response);
     const { results, total } = response.data.data;
     const theresMore = characters.length < total;
 
@@ -49,6 +52,7 @@ const GeneralView = (props) => {
   useEffect(() => {
     setLoading(true);
     makeRequest(offset);
+    return () => cancel.current();
   }, [offset]); // eslint-disable-line
 
   return (

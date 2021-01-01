@@ -19,6 +19,7 @@ function DetailedView(props) {
   const [firstShown, setFirstShown] = useState(0);
   const [types, setTypes] = useState(checkTypes(speceficCharacter));
   const totalMaterial = useRef(0);
+  const cancel = useRef(() => {});
   const id = useRef(speceficCharacter.id);
 
   //deals with material shown
@@ -34,13 +35,13 @@ function DetailedView(props) {
   }
 
   const makeRequest = useCallback(
-    async (offset, id) => {
+    async (offset, id, cancel) => {
       let type = 'comics';
       if (types[0]) type = types[0].type;
       else return;
 
       const beforeQ = `characters/${id.current}/${type}`;
-      const response = await api(offset, beforeQ, '');
+      const response = await api(offset, beforeQ, '', cancel);
       const { results, total } = response.data.data;
 
       setLoading(false);
@@ -68,7 +69,7 @@ function DetailedView(props) {
   useEffect(() => {
     if (types) {
       setLoading(true);
-      makeRequest(offset, id);
+      makeRequest(offset, id, cancel);
     }
   }, [makeRequest, offset, id, types]);
 
@@ -80,7 +81,8 @@ function DetailedView(props) {
       return uniqueWithThumbnails;
     });
   }, [material]);
-  console.log(thumbMaterial);
+
+  // console.log(thumbMaterial);
   return (
     <S.FlexWrapper direction="column" width="80%" padding="5% 0 0 0">
       <S.FlexWrapper
@@ -113,20 +115,15 @@ function DetailedView(props) {
           >{`<`}</C.CarouselButton>
         )}
         {materialShown.map((item, index) => {
-          console.log(`url${index}`, item.urls);
           return (
-            <>
-              <S.Link href={item.urls[0].url}>
-                <C.Portrait
-                  key={index}
-                  src={`${item.thumbnail.path}/portrait_fantastic.${item.thumbnail.extension}`}
-                  alt={item.title}
-                  width="100%"
-                  height="auto"
-                  // margin="0 10px"
-                />
-              </S.Link>
-            </>
+            <S.Link key={index} href={item.urls[0].url}>
+              <C.Portrait
+                src={`${item.thumbnail.path}/portrait_fantastic.${item.thumbnail.extension}`}
+                alt={item.title}
+                width="100%"
+                height="auto"
+              />
+            </S.Link>
           );
         })}
         {lastShown + 1 <= thumbMaterial.length && (
