@@ -3,9 +3,6 @@ import styled from 'styled-components';
 const ResultsContainer = styled.div`
   width: clamp(15%, 200px, 25%);
   max-height: 50vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
   position: absolute;
   right: 0;
   top: clamp(40px, 8vh, 70px);
@@ -14,14 +11,14 @@ const ResultsContainer = styled.div`
 `;
 
 const Result = styled.div`
-  background-color: #3d3e42;
+  height: ${(props) => props.height};
+  width: 100%;
   display: flex;
   justify-content: flex-start;
   flex-direction: row;
   align-items: center;
+  background-color: #3d3e42;
   border-top: 1px solid black;
-  height: 45px;
-  width: 100%;
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
@@ -31,5 +28,7 @@ const Result = styled.div`
 const Text = styled.p`
   padding: 0 0 0 5%;
   color: #97989c;
+  margin-block-end: 0;
+  margin-block-start: 0;
 `;
 export { ResultsContainer, Result, Text };

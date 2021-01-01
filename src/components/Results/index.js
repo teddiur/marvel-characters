@@ -44,15 +44,20 @@ function Results(props) {
   return (
     <S.ResultsContainer>
       {material.results.map((item, index) => {
+        const size = 'max(50px, 20%)';
         const src = item.thumbnail.path.includes('not_available')
           ? `http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/landscape_small.jpg`
           : `${item.thumbnail.path}/standard_small.${item.thumbnail.extension}`;
         return (
-          <S.Result key={index} onClick={() => setSpecificCharacter(item)}>
+          <S.Result
+            height={size}
+            key={index}
+            onClick={() => setSpecificCharacter(item)}
+          >
             <C.Portrait
               src={src}
-              width="45px"
-              height="45px"
+              height={size}
+              width={size}
               fit="cover"
             ></C.Portrait>
             <S.Text>{item.name}</S.Text>
