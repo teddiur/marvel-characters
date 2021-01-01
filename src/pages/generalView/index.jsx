@@ -9,7 +9,7 @@ const GeneralView = (props) => {
   const { characters, setCharacters, setSpecificCharacter } = props;
   const [loading, setLoading] = useState(true);
   const [offset, setOffset] = useState(0);
-  const cancel = useRef(() => console.log('ref'));
+  const cancel = useRef(() => {});
 
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef();
@@ -37,7 +37,6 @@ const GeneralView = (props) => {
     const url = 'characters';
 
     const response = await api(offset, url, '', cancel);
-    // console.log(response);
     const { results, total } = response.data.data;
     const theresMore = characters.length < total;
 
@@ -64,7 +63,6 @@ const GeneralView = (props) => {
               return (
                 <C.CharacterCard
                   onClick={() => {
-                    console.log('oi', index);
                     setSpecificCharacter(character);
                   }}
                   ref={lastLoadedChar}

@@ -38,7 +38,7 @@ const Wrapper = styled.div`
 `;
 
 const Searchbar = styled.div`
-  width: clamp(15%, 200px, 25%);
+  width: clamp(12%, 200px, 22%);
   box-sizing: border-box;
   position: absolute;
   right: 2%;
@@ -53,9 +53,10 @@ const Searchbar = styled.div`
     stroke: #802733;
     right: 0;
     cursor: pointer;
+    transition: right 0.15s ease;
   }
   input:focus + svg {
-    left: 0;
+    right: 100%;
   }
 
   input {
@@ -63,12 +64,14 @@ const Searchbar = styled.div`
     border: none;
     height: 50%;
     width: 100%;
-    padding: 0 25px;
+    margin: 0 0 0 5%;
+    /* padding: 0 5%; */
     color: #a8a8a8;
     caret-color: #802733;
 
     &:focus {
       outline: none;
+      border-bottom: 1px solid #802733;
     }
   }
 `;

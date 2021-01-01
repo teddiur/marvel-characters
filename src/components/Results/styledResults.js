@@ -22,6 +22,10 @@ const Result = styled.div`
   border-top: 1px solid black;
   height: 45px;
   width: 100%;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const Text = styled.p`

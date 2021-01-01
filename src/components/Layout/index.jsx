@@ -3,8 +3,9 @@ import { MarvelLogo } from '../../assets/index';
 import * as S from './styledLayout';
 import * as C from '../';
 
-const Layout = ({ onClick, children }) => {
+const Layout = ({ setSpecificCharacter, children }) => {
   const [inputRef, setInputFocus] = useFocus();
+  const [isFocus, setIsFocus] = useState(false);
   const [offset, setOffset] = useState(0);
   const [query, setQuery] = useState('');
 
@@ -12,21 +13,24 @@ const Layout = ({ onClick, children }) => {
     setQuery(event.target.value);
     setOffset(0);
   }
-
+  // console.log(inputRef, 'input');
   return (
     <S.Wrapper>
       <S.Header>
         <S.Logo
-          onClick={() => onClick(null)}
+          onClick={() => setSpecificCharacter(null)}
           src={MarvelLogo}
           alt="Logo Marvel"
         />
         <S.Searchbar>
           <input
             ref={inputRef}
+            value={query}
             onChange={(event) => {
               handleInput(event);
             }}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
           />
           <svg
             onClick={setInputFocus}
@@ -45,10 +49,25 @@ const Layout = ({ onClick, children }) => {
               strokeWidth="5"
             />
           </svg>
-          <span>X</span>
+          {isFocus && (
+            <span
+              style={{ color: 'white', cursor: 'pointer', zIndex: '2' }}
+              onClick={() => {
+                setQuery('');
+                console.log('dentro');
+              }}
+            >
+              X
+            </span>
+          )}
         </S.Searchbar>
       </S.Header>
-      <C.Results query={query} offset={offset} setOffset={setOffset} />
+      <C.Results
+        query={query}
+        offset={offset}
+        setOffset={setOffset}
+        setSpecificCharacter={setSpecificCharacter}
+      />
       <S.Main>{children}</S.Main>
     </S.Wrapper>
   );
