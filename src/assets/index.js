@@ -1,3 +1,4 @@
 import MarvelLogo from './logo/MarvelLogo.svg';
-
-export { MarvelLogo };
+import close from './logo/close.svg';
+import search from './logo/search.svg';
+export { MarvelLogo, close, search };

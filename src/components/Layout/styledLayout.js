@@ -37,42 +37,4 @@ const Wrapper = styled.div`
   flex-wrap: nowrap;
 `;
 
-const Searchbar = styled.div`
-  width: clamp(12%, 200px, 22%);
-  box-sizing: border-box;
-  position: absolute;
-  right: 2%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  svg {
-    position: absolute;
-    width: 20px;
-    stroke: #802733;
-    right: 0;
-    cursor: pointer;
-    transition: right 0.15s ease;
-  }
-  input:focus + svg {
-    right: 100%;
-  }
-
-  input {
-    background-color: transparent;
-    border: none;
-    height: 50%;
-    width: 100%;
-    margin: 0 0 0 5%;
-    /* padding: 0 5%; */
-    color: #a8a8a8;
-    caret-color: #802733;
-
-    &:focus {
-      outline: none;
-      border-bottom: 1px solid #802733;
-    }
-  }
-`;
-export { Header, Logo, Main, Wrapper, Searchbar };
+export { Header, Logo, Main, Wrapper };
