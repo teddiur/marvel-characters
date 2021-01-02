@@ -58,7 +58,8 @@ function Results({
       const theresMore = material.results.length < total;
       setHasMore(theresMore);
     })();
-    const insideCancel = cancel.current;
+    const insideCancel = cancel.current; //eslint complains
+
     return () => insideCancel();
   }, [query, offset]); //eslint-disable-line
 

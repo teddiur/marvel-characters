@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import api from '../../services/api';
 import useLastLoaded from '../../services/infiniteScroll';
 import { removeDuplicates } from '../../services/generalFunctions';
@@ -38,9 +38,11 @@ const GeneralView = (props) => {
       setLoading(true);
       makeRequest(offset);
     })();
-    return () => cancel.current();
+    const insideCancel = cancel.current; //eslint complains
+
+    return () => insideCancel();
   }, [offset]); // eslint-disable-line
-  console.log(process.env);
+
   return (
     <>
       {characters && (

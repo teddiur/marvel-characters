@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import * as S from './styledLoading';
 
 function Loading({ width, numButtons }) {
