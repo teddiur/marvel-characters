@@ -4,7 +4,6 @@ import * as S from './styledLayout';
 import * as C from '../';
 
 const Layout = ({ setSpecificCharacter, children }) => {
-  const [isFocus, setIsFocus] = useState(false);
   const [offset, setOffset] = useState(0);
   const [query, setQuery] = useState('');
 
@@ -16,13 +15,7 @@ const Layout = ({ setSpecificCharacter, children }) => {
           src={MarvelLogo}
           alt="Logo Marvel"
         />
-        <C.Searchbar
-          isFocus={isFocus}
-          setIsFocus={setIsFocus}
-          query={query}
-          setQuery={setQuery}
-          setOffset={setOffset}
-        />
+        <C.Searchbar query={query} setQuery={setQuery} setOffset={setOffset} />
       </S.Header>
       <C.Results
         query={query}

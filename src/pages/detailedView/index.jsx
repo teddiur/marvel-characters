@@ -27,7 +27,7 @@ function DetailedView(props) {
 
   const materialShown = thumbMaterial.data.slice(firstShown, lastShown);
 
-  if (totalMaterial.current === 0) {
+  if (totalMaterial.current === 0 && types.length !== 0) {
     totalMaterial.current = types.reduce(
       (acc, cur) => Number(acc.available) + Number(cur.available),
     );
@@ -36,9 +36,10 @@ function DetailedView(props) {
   const makeRequest = useCallback(
     async (offset, id, cancel) => {
       let type = 'comics';
-      if (types[0]) type = types[0].type;
-      //problably change
-      else return;
+      if (types.length > 0) type = types[0].type;
+      else {
+        return { results: [], total: 0 };
+      }
 
       const beforeQ = `characters/${id}/${type}`;
       const response = await api(offset, beforeQ, '', cancel);
@@ -98,7 +99,12 @@ function DetailedView(props) {
 
   const characterPortrait = `${specificCharacter.thumbnail.path}/landscape_incredible.${specificCharacter.thumbnail.extension}`;
   return (
-    <S.FlexWrapper direction="column" width="80%" padding="5% 0 0 0">
+    <S.FlexWrapper
+      direction="column"
+      justify="flex-start"
+      width="80%"
+      padding="5% 0 0 0"
+    >
       <S.FlexWrapper
         justify="flex-start"
         direction={width > 850 ? 'row' : 'column'}

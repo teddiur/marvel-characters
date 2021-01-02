@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import * as S from './styledSearch';
 import { search } from '../../assets/';
 
-function Searchbar({ isFocus, setIsFocus, query, setQuery, setOffset }) {
+function Searchbar({ setIsFocus, query, setQuery, setOffset }) {
   const [inputRef, setInputFocus] = useFocus();
 
   function handleInput(event) {
@@ -13,7 +13,6 @@ function Searchbar({ isFocus, setIsFocus, query, setQuery, setOffset }) {
   function handleBlurInput() {
     setTimeout(() => {
       setQuery('');
-      setIsFocus(false);
     }, 100);
   }
   return (
@@ -24,7 +23,6 @@ function Searchbar({ isFocus, setIsFocus, query, setQuery, setOffset }) {
         onChange={(event) => {
           handleInput(event);
         }}
-        onFocus={() => setIsFocus(true)}
         onBlur={handleBlurInput}
       />
       <img src={search} alt="search" onClick={setInputFocus} />

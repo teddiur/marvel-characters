@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import api from '../../services/api';
-// import getMd5 from '../../services/md5';
+import useLastLoaded from '../../services/infiniteScroll';
 import { removeDuplicates } from '../../services/generalFunctions';
 import * as C from '../../components';
 import * as S from './styledPage';
@@ -14,43 +14,30 @@ const GeneralView = (props) => {
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef();
 
-  const lastLoadedChar = useCallback(
-    (node) => {
-      if (loading) return; //if it's loading i don't want to change the observer yet
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting && hasMore) {
-            setOffset((previous) => previous + 20);
-          }
-        },
-        { threshold: 0.9 },
-      );
-
-      if (node) observer.current.observe(node);
-    },
-    [loading, hasMore],
-  );
+  const lastLoadedChar = useLastLoaded(loading, observer, setOffset, hasMore);
 
   const makeRequest = async (offset) => {
     const url = 'characters';
 
     const response = await api(offset, url, '', cancel);
-    const { results, total } = response.data.data;
-    const theresMore = characters.length < total;
+    if (response) {
+      const { results, total } = response.data.data;
+      const theresMore = characters.length < total;
 
-    setLoading(false);
-    setCharacters((prevChars) => {
-      return removeDuplicates([...prevChars, ...results], 'id');
-    });
+      setLoading(false);
+      setCharacters((prevChars) => {
+        return removeDuplicates([...prevChars, ...results], 'id');
+      });
 
-    setHasMore(theresMore);
+      setHasMore(theresMore);
+    }
   };
 
   useEffect(() => {
-    setLoading(true);
-    makeRequest(offset);
+    (async () => {
+      setLoading(true);
+      makeRequest(offset);
+    })();
     return () => cancel.current();
   }, [offset]); // eslint-disable-line
 

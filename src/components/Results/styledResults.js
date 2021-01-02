@@ -2,12 +2,16 @@ import styled from 'styled-components';
 
 const ResultsContainer = styled.div`
   width: clamp(15%, 200px, 25%);
+  min-width: 250px;
   max-height: 50vh;
   position: absolute;
   right: 0;
   top: clamp(40px, 8vh, 70px);
   z-index: 1;
   overflow-y: scroll;
+  @media (max-width: 700px) {
+    width: clamp(25%, 250px, 100%);
+  }
 `;
 
 const Result = styled.div`
