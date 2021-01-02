@@ -22,24 +22,25 @@ const GeneralView = (props) => {
     const response = await api(offset, url, '', cancel);
     if (response) {
       const { results, total } = response.data.data;
-      const theresMore = characters.length < total;
-
-      setLoading(false);
-      setCharacters((prevChars) => {
-        return removeDuplicates([...prevChars, ...results], 'id');
-      });
-
-      setHasMore(theresMore);
+      return { results, total };
     }
+    return { results: [], total: 0 };
   };
 
   useEffect(() => {
     (async () => {
       setLoading(true);
-      makeRequest(offset);
-    })();
-    const insideCancel = cancel.current; //eslint complains
+      const { results, total } = await makeRequest(offset);
+      setLoading(false);
+      setCharacters((prevChars) => {
+        return removeDuplicates([...prevChars, ...results], 'id');
+      });
 
+      const theresMore = characters.length < total;
+      setHasMore(theresMore);
+    })();
+
+    const insideCancel = cancel.current; //eslint complains
     return () => insideCancel();
   }, [offset]); // eslint-disable-line
 
