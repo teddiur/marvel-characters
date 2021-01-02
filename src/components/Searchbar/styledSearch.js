@@ -19,7 +19,7 @@ const Searchbar = styled.div`
   }
 `;
 const CloseIcon = styled.img`
-  width: 2vw;
+  width: 20px;
   cursor: pointer;
 `;
 const InputSearch = styled.input`
