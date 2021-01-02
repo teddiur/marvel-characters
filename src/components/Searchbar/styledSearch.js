@@ -10,18 +10,18 @@ const Searchbar = styled.div`
   justify-content: center;
   align-items: center;
 
-  img {
+  img:first-child {
     position: absolute;
     width: 20px;
-    right: 0;
-    cursor: pointer;
+    right: ${(props) => props.searchRight};
     transition: right 0.15s ease;
-  }
-  input:focus + img {
-    right: 100%;
+    cursor: pointer;
   }
 `;
-
+const CloseIcon = styled.img`
+  width: 2vw;
+  cursor: pointer;
+`;
 const InputSearch = styled.input`
   background-color: transparent;
   border: none;
@@ -36,4 +36,4 @@ const InputSearch = styled.input`
     border-bottom: 1px solid #802733;
   }
 `;
-export { Searchbar, InputSearch };
+export { Searchbar, InputSearch, CloseIcon };
