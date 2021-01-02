@@ -17,7 +17,8 @@ function useLastLoaded(loading, observer, setOffset, hasMore) {
 
       if (node) observer.current.observe(node);
     },
-    [loading, hasMore],
+    [loading, hasMore], //eslint-disable-line
+    //observer is useref and setoffset is usestate
   );
   return lastLoadedChar;
 }
