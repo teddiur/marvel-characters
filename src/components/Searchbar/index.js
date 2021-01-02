@@ -1,22 +1,35 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import * as S from './styledSearch';
-import { search } from '../../assets/';
+import { search, close } from '../../assets/';
 
-function Searchbar({ setIsFocus, query, setQuery, setOffset }) {
+function Searchbar({ query, setQuery, setOffset, setResultsVisible }) {
   const [inputRef, setInputFocus] = useFocus();
+  const [isFocus, setIsFocus] = useState(false);
 
   function handleInput(event) {
     setQuery(event.target.value);
     setOffset(0);
+    setTimeout(() => {
+      setResultsVisible(true);
+    }, 100);
   }
 
   function handleBlurInput() {
+    setIsFocus(false);
     setTimeout(() => {
-      setQuery('');
+      setResultsVisible(false);
     }, 100);
   }
+
+  function handleFocus() {
+    setIsFocus(true);
+    setInputFocus();
+  }
+  const inputActive = isFocus || query;
+
   return (
-    <S.Searchbar>
+    <S.Searchbar searchRight={inputActive ? '100%' : 0}>
+      <img src={search} alt="search" onClick={handleFocus} />
       <S.InputSearch
         ref={inputRef}
         value={query}
@@ -25,7 +38,9 @@ function Searchbar({ setIsFocus, query, setQuery, setOffset }) {
         }}
         onBlur={handleBlurInput}
       />
-      <img src={search} alt="search" onClick={setInputFocus} />
+      {inputActive && (
+        <S.CloseIcon src={close} alt="close" onClick={() => setQuery('')} />
+      )}
     </S.Searchbar>
   );
 }
