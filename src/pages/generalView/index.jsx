@@ -40,7 +40,7 @@ const GeneralView = (props) => {
     })();
     return () => cancel.current();
   }, [offset]); // eslint-disable-line
-
+  console.log(process.env);
   return (
     <>
       {characters && (

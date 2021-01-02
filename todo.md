@@ -2,13 +2,13 @@
 
 [x] infinite scroll
 
-[] api https://developer.marvel.com/
+[x] api https://developer.marvel.com/
 
 - [x] gerar keys
 - [x] base endpoint https://gateway.marvel.com/
 - [x] pegar personagens
 - [x] comics/novels/etc
-- [] pesquisar por string
+- [x] pesquisar por string
 
 [x] Layout da página
 
@@ -20,7 +20,7 @@
 - [x] namebox component
 - [x] infinite scroll
 
-[] Barra de pesquisa
+[x] Barra de pesquisa
 
 [x] Dropdown de pesquisa
 

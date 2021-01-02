@@ -126,13 +126,15 @@ function DetailedView(props) {
           </S.Text>
         </S.FlexWrapper>
       </S.FlexWrapper>
-      <S.FlexWrapper justify="space-between" align="center" position="relative">
+      <S.FlexWrapper justify="space-evenly" align="center" position="relative">
         {firstShown !== 0 && (
           <C.CarouselButton
             key="firstShown"
             onClick={setFirstShown}
             action="less"
-          >{`<`}</C.CarouselButton>
+          >
+            {'<'}
+          </C.CarouselButton>
         )}
         {materialShown.map((item, index) => {
           return (
@@ -151,9 +153,14 @@ function DetailedView(props) {
             key="lastShown"
             onClick={setFirstShown}
             action="more"
-          >{`>`}</C.CarouselButton>
+          >
+            {'>'}
+          </C.CarouselButton>
         )}
-        {loading && <C.Loading />}
+        {loading && <C.Loading width="max(15%, 200px)" numButtons="3" />}
+        {!loading && materialShown.length === 0 && (
+          <p>There is no material available</p>
+        )}
       </S.FlexWrapper>
     </S.FlexWrapper>
   );

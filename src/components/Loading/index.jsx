@@ -1,12 +1,14 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import * as S from './styledLoading';
 
-function Loading() {
-  const colors = ['#800000', '#ba0f0f', '#b44646', '#ff7e7e', '#ff7e7e'];
+function Loading({ width, numButtons }) {
+  let colors = ['#800000', '#ba0f0f', '#b44646', '#ff7e7e', '#ff7e7e'];
+  if (numButtons) colors = colors.slice(0, numButtons);
+
   return (
-    <S.LoadingContainer>
+    <S.LoadingContainer width={width}>
       {colors.map((color, index) => (
-        <S.Dot key={index} color={color} delay={(index + 1) * 0.2} />
+        <S.Dot key={index} color={color} delay={index * 0.2} />
       ))}
     </S.LoadingContainer>
   );
