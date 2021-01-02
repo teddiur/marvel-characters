@@ -9,5 +9,6 @@ html, body, #root {
   margin: 0;
   font-family: 'Mukta', sans-serif;
   font-size: 10px;
+  color: white;
 }`;
 export { GlobalStyle };

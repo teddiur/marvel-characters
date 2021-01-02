@@ -32,6 +32,6 @@ const Dot = styled.div`
 const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
-  width: 100%;
+  width: ${(props) => props.width || '100%'};
 `;
 export { Dot, LoadingContainer };
