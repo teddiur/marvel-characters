@@ -1,60 +1,44 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import api from '../../services/api';
-import getMd5 from '../../services/md5';
+import useLastLoaded from '../../services/infiniteScroll';
 import { removeDuplicates } from '../../services/generalFunctions';
 import * as C from '../../components';
 import * as S from './styledPage';
 
 const GeneralView = (props) => {
   const { characters, setCharacters, setSpecificCharacter } = props;
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [offset, setOffset] = useState(0);
+  const cancel = useRef(() => {});
+
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef();
 
-  const lastLoadedChar = useCallback(
-    (node) => {
-      if (loading) return; //if it's loading i don't want to change the observer yet
-      if (observer.current) observer.current.disconnect();
+  const lastLoadedChar = useLastLoaded(loading, observer, setOffset, hasMore);
 
-      observer.current = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting && hasMore) {
-            setOffset((previous) => previous + 20);
-          }
-        },
-        { threshold: 0.9 },
-      );
+  const makeRequest = async (offset) => {
+    const url = 'characters';
 
-      if (node) observer.current.observe(node);
-    },
-    [loading, hasMore],
-  );
+    const response = await api(offset, url, '', cancel);
+    if (response) {
+      const { results, total } = response.data.data;
+      const theresMore = characters.length < total;
 
-  const getCharacters = async (offset) => {
-    const { ts, md5Hash } = getMd5();
+      setLoading(false);
+      setCharacters((prevChars) => {
+        return removeDuplicates([...prevChars, ...results], 'id');
+      });
 
-    await api
-      .get(
-        `characters?offset=${offset}&ts=${ts}&apikey=${process.env.REACT_APP_MARVEL_PUBLIC_KEY}&hash=${md5Hash}`,
-      )
-      .then((response) => {
-        const { results, total } = response.data.data;
-        const theresMore = characters.length < total;
-
-        setLoading(false);
-        setCharacters((prevChars) => {
-          return removeDuplicates([...prevChars, ...results], 'id');
-        });
-
-        setHasMore(theresMore);
-      })
-      .catch((err) => console.log('ERROR:', err));
+      setHasMore(theresMore);
+    }
   };
 
   useEffect(() => {
-    setLoading(true);
-    getCharacters(offset);
+    (async () => {
+      setLoading(true);
+      makeRequest(offset);
+    })();
+    return () => cancel.current();
   }, [offset]); // eslint-disable-line
   console.log(process.env);
   return (
@@ -66,7 +50,6 @@ const GeneralView = (props) => {
               return (
                 <C.CharacterCard
                   onClick={() => {
-                    console.log('oi', index);
                     setSpecificCharacter(character);
                   }}
                   ref={lastLoadedChar}

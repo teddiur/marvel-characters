@@ -8,9 +8,9 @@ function App() {
   const [specificCharacter, setSpecificCharacter] = useState(null);
 
   return (
-    <C.Layout onClick={setSpecificCharacter}>
+    <C.Layout setSpecificCharacter={setSpecificCharacter}>
       {specificCharacter ? (
-        <P.DetailedView speceficCharacter={specificCharacter} />
+        <P.DetailedView specificCharacter={specificCharacter} />
       ) : (
         <P.GeneralView
           characters={characters}

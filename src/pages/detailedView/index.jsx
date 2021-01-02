@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import getMd5 from '../../services/md5';
+// import getMd5 from '../../services/md5';
 import api from '../../services/api';
 import {
   removeDuplicates,
@@ -9,54 +9,45 @@ import * as C from '../../components';
 import * as S from './styledPage';
 
 function DetailedView(props) {
-  const { speceficCharacter } = props;
+  const { specificCharacter } = props;
 
-  const [material, setMaterial] = useState([]);
-  const [thumbMaterial, setThumbMaterial] = useState([]);
+  const [material, setMaterial] = useState({ id: '', data: [] });
+  const [thumbMaterial, setThumbMaterial] = useState({ id: '', data: [] });
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [offset, setOffset] = useState(0);
   const [firstShown, setFirstShown] = useState(0);
-  const [types, setTypes] = useState(checkTypes(speceficCharacter));
+  const [types, setTypes] = useState(checkTypes(specificCharacter));
   const totalMaterial = useRef(0);
-  const id = useRef(speceficCharacter.id);
+  const cancel = useRef(() => {});
 
-  // //deals with material shown
+  //deals with material shown
   const { width } = useWindowDimensions();
   const lastShown = getLastShown(width, firstShown);
-  const materialShown = thumbMaterial.slice(firstShown, lastShown);
-  const characterPortrait = `${speceficCharacter.thumbnail.path}/landscape_incredible.${speceficCharacter.thumbnail.extension}`;
 
-  if (totalMaterial.current === 0) {
-    types.forEach((type) => {
-      totalMaterial.current = Number(totalMaterial.current) + type.available;
-    });
+  const materialShown = thumbMaterial.data.slice(firstShown, lastShown);
+
+  if (totalMaterial.current === 0 && types.length !== 0) {
+    totalMaterial.current = types.reduce(
+      (acc, cur) => Number(acc.available) + Number(cur.available),
+    );
   }
 
-  const getMaterial = useCallback(
-    async (offset, id) => {
-      const { ts, md5Hash } = getMd5();
+  const makeRequest = useCallback(
+    async (offset, id, cancel) => {
       let type = 'comics';
-      if (types[0]) type = types[0].type;
-      else return;
-      await api
-        .get(
-          `characters/${id.current}/${type}?offset=${offset}&ts=${ts}&apikey=${process.env.REACT_APP_MARVEL_PUBLIC_KEY}&hash=${md5Hash}`,
-        )
-        .then((response) => {
-          const { results, total } = response.data.data;
+      if (types.length > 0) type = types[0].type;
+      else {
+        return { results: [], total: 0 };
+      }
 
-          setLoading(false);
-          setMaterial((prevChars) => {
-            const unique = removeDuplicates([...prevChars, ...results], 'id');
-            const theresMore = unique.length < total;
-            setHasMore(theresMore);
-            return unique;
-          });
-        })
-        .catch((err) => console.log('ERROR:', err));
+      const beforeQ = `characters/${id}/${type}`;
+      const response = await api(offset, beforeQ, '', cancel);
+      const { results, total } = response.data.data;
+
+      return { results, total };
     },
-    [types], //eslint-disable-line
+    [types],
   );
 
   useEffect(() => {
@@ -65,32 +56,52 @@ function DetailedView(props) {
     else if (material.length > 0 && types.length > 0) {
       setTypes((prev) => prev.slice(1));
       setOffset(0);
-    } else {
-      return;
     }
   }, [lastShown, hasMore]); //eslint-disable-line
 
   useEffect(() => {
-    if (types) {
+    (async () => {
       setLoading(true);
-      getMaterial(offset, id);
-    }
-  }, [getMaterial, offset, id, types]);
+      const { results, total } = await makeRequest(
+        offset,
+        specificCharacter.id,
+        cancel,
+      );
+      if (results) {
+        setLoading(false);
+        if (material.id === specificCharacter.id) {
+          setMaterial((prevChars) => {
+            return {
+              id: specificCharacter.id,
+              data: removeDuplicates([...prevChars.data, ...results], 'id'),
+            };
+          });
+        } else {
+          setFirstShown(0);
+          setMaterial(() => {
+            return { id: specificCharacter.id, data: results };
+          });
+          const theresMore = material.length < total;
+          setHasMore(theresMore);
+        }
+      }
+    })();
+  }, [makeRequest, offset, specificCharacter.id]); //eslint-disable-line
 
   useEffect(() => {
     setThumbMaterial(() => {
-      const uniqueWithThumbnails = material.filter((item) => {
+      const uniqueWithThumbnails = material.data.filter((item) => {
         return item.thumbnail;
       });
-      return uniqueWithThumbnails;
+      return { id: specificCharacter.id, data: uniqueWithThumbnails };
     });
-  }, [material]);
+  }, [material]); //eslint-disable-line
 
+  const characterPortrait = `${specificCharacter.thumbnail.path}/landscape_incredible.${specificCharacter.thumbnail.extension}`;
   return (
     <S.FlexWrapper
       direction="column"
-      marginLeft="auto"
-      marginRight="auto"
+      justify="flex-start"
       width="80%"
       padding="5% 0 0 0"
     >
@@ -102,16 +113,16 @@ function DetailedView(props) {
       >
         <C.Portrait
           src={characterPortrait}
-          alt={speceficCharacter.name}
+          alt={specificCharacter.name}
           width="clamp(25%, 350px, 100%)"
           height="auto"
         />
         <S.FlexWrapper direction="column" justify="center" marginLeft="15px">
           <S.SubTitle>Name:</S.SubTitle>
-          <S.Text>{speceficCharacter.name}</S.Text>
+          <S.Text>{specificCharacter.name}</S.Text>
           <S.SubTitle>Description:</S.SubTitle>
           <S.Text>
-            {speceficCharacter.description || 'Description not available.'}
+            {specificCharacter.description || 'Description not available.'}
           </S.Text>
         </S.FlexWrapper>
       </S.FlexWrapper>
@@ -125,19 +136,17 @@ function DetailedView(props) {
         )}
         {materialShown.map((item, index) => {
           return (
-            <>
+            <S.Link key={index} href={item.urls[0].url}>
               <C.Portrait
-                key={index}
                 src={`${item.thumbnail.path}/portrait_fantastic.${item.thumbnail.extension}`}
                 alt={item.title}
-                width="max(15%, 200px)"
+                width="100%"
                 height="auto"
-                margin="0 10px"
               />
-            </>
+            </S.Link>
           );
         })}
-        {lastShown + 1 <= thumbMaterial.length && (
+        {lastShown + 1 <= thumbMaterial.data.length && (
           <C.CarouselButton
             key="lastShown"
             onClick={setFirstShown}
@@ -164,11 +173,11 @@ function checkTypes(character) {
     { type: 'series', hasMore: true },
     { type: 'stories', hasMore: true },
   ];
-  const results = [];
+  const charTypes = [];
   types.forEach((item) => {
     try {
       if (character[item.type].available > 0) {
-        results.push({
+        charTypes.push({
           type: item.type,
           available: Number(character[item.type].available),
         });
@@ -177,7 +186,7 @@ function checkTypes(character) {
       console.log(error);
     }
   });
-  return results;
+  return charTypes;
 }
 
 export { DetailedView };

@@ -2,7 +2,7 @@ import React from 'react';
 import * as S from './styledLoading';
 
 function Loading() {
-  const colors = ['#7ef9ff', '#89cff0', '#4682b4', '#0f52ba', '#000080'];
+  const colors = ['#800000', '#ba0f0f', '#b44646', '#ff7e7e', '#ff7e7e'];
   return (
     <S.LoadingContainer>
       {colors.map((color, index) => (
