@@ -14,6 +14,7 @@ const makeRequest = async (offset, cancel) => {
 };
 
 export default async function getData(offset, cancel, days = 1) {
+  console.log(myStorage);
   let localResults = myStorage.getItem('results')
     ? JSON.parse(myStorage.getItem('results'))
     : [];
