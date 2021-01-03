@@ -7,6 +7,7 @@ const FlexWrapper = styled.div`
   justify-content: ${(props) => props.justify};
   align-items: ${(props) => props.align};
   width: ${(props) => props.width};
+  height: ${(props) => props.height};
   padding: ${(props) => props.padding};
   margin-left: ${(props) => props.marginLeft};
   margin-right: ${(props) => props.marginRight};

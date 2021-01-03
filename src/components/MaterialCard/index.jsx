@@ -28,7 +28,7 @@ function MaterialCard({ material }) {
           display={display}
           onLoad={handleLoaded}
           width="100%"
-          height="auto"
+          height="100%"
         />
       </S.Link>
     </>

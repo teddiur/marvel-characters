@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef } from 'react';
 // import getMd5 from '../../services/md5';
 import api from '../../services/api';
 import {
@@ -12,8 +12,8 @@ function DetailedView(props) {
   const { specificCharacter } = props;
   const { id } = specificCharacter;
 
-  const [material, setMaterial] = useState({ id: '', data: [] });
-  const [thumbMaterial, setThumbMaterial] = useState({ id: '', data: [] });
+  const [material, setMaterial] = useState({ id: 0, data: [] });
+  const [thumbMaterial, setThumbMaterial] = useState({ id: 0, data: [] });
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [offset, setOffset] = useState(0);
@@ -26,23 +26,6 @@ function DetailedView(props) {
   const lastShown = getLastShown(width, firstShown);
   const materialShown = thumbMaterial.data.slice(firstShown, lastShown);
 
-  const makeRequest = useCallback(
-    async (offset, id, cancel) => {
-      let type = 'comics';
-      if (types.length > 0) type = types[0].type;
-      else {
-        return { results: [], total: 0 };
-      }
-
-      const beforeQ = `characters/${id}/${type}`;
-      const response = await api(offset, beforeQ, '', cancel);
-      const { results, total } = response.data.data;
-
-      return { results, total };
-    },
-    [types],
-  );
-
   useEffect(() => {
     //this effect either starts a chain reaction that ends with a request or kills it here
     if (lastShown < thumbMaterial.length) return;
@@ -51,14 +34,15 @@ function DetailedView(props) {
       setTypes((prev) => prev.slice(1));
       setOffset(0);
     }
-  }, [lastShown, hasMore]); //eslint-disable-line
+  }, [lastShown, hasMore, thumbMaterial, material, types]);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { results, total } = await makeRequest(offset, id, cancel);
+      const { results, total } = await makeRequest(offset, id, cancel, types);
+      setLoading(false);
+
       if (results) {
-        setLoading(false);
         if (material.id === id) {
           setMaterial((prevChars) => {
             return {
@@ -71,14 +55,16 @@ function DetailedView(props) {
           setMaterial(() => {
             return { id, data: results };
           });
-          const theresMore = material.length < total;
-          setHasMore(theresMore);
         }
+
+        const theresMore = material.length < total;
+        setHasMore(theresMore);
       }
     })();
-  }, [makeRequest, offset, id]); //eslint-disable-line
+  }, [types, offset, id]); //eslint-disable-line
 
   useEffect(() => {
+    //used a separated useEffect because material state was not updating before setThumbMaterial was running
     setThumbMaterial(() => {
       const uniqueWithThumbnails = material.data.filter((item) => {
         return item.thumbnail;
@@ -116,7 +102,12 @@ function DetailedView(props) {
           </S.Text>
         </S.FlexWrapper>
       </S.FlexWrapper>
-      <S.FlexWrapper justify="space-evenly" align="center" position="relative">
+      <S.FlexWrapper
+        height="310px"
+        justify="space-evenly"
+        align="center"
+        position="relative"
+      >
         {firstShown !== 0 && (
           <C.CarouselButton
             key="firstShown"
@@ -138,7 +129,7 @@ function DetailedView(props) {
             {'>'}
           </C.CarouselButton>
         )}
-        {loading && <C.Loading width="max(15%, 200px)" numButtons="3" />}
+        {loading && <C.Loading width="200px" numButtons="3" />}
         {!loading && materialShown.length === 0 && (
           <p>There is no material available</p>
         )}
@@ -175,6 +166,17 @@ function checkTypes(character) {
     }
   });
   return charTypes;
+}
+
+async function makeRequest(offset, id, cancel, types) {
+  if (types.length === 0) return { results: [], total: 0 };
+  const type = types[0].type;
+
+  const beforeQ = `characters/${id}/${type}`;
+  const response = await api(offset, beforeQ, '', cancel);
+  const { results, total } = response.data.data;
+
+  return { results, total };
 }
 
 export { DetailedView };
