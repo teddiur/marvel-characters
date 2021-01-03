@@ -59,6 +59,7 @@ function formatForStorage(arr) {
 }
 
 function shouldUseLocalStorage(offset, days) {
+  if (!myStorage.getItem('results')) return false;
   const requestedData = JSON.parse(myStorage.getItem('results')).slice(
     offset,
     offset + 20,
