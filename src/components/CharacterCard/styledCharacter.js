@@ -5,10 +5,17 @@ const CardImage = styled.div`
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  width: 50%;
-  height: 30vh;
+  /* height: 30vh; */
   position: relative;
   cursor: pointer;
+  height: 225px;
+  @media (min-width: 375px) {
+    height: calc(225px + (125 * ((100vw - 375px) / 1225)));
+  }
+  @media (min-width: 1500px) {
+    height: 350px;
+  }
+  width: 50%;
   @media (max-width: 650px) {
     width: 100%;
   }
