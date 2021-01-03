@@ -22,14 +22,17 @@ function MaterialCard({ material }) {
     <>
       {loading && <C.Loading width="max(15%, 200px)" numButtons="3" />}
       <S.Link href={material.urls[0].url}>
-        <C.Portrait
-          src={`${material.thumbnail.path}/portrait_fantastic.${material.thumbnail.extension}`}
-          alt={material.title}
-          display={display}
-          onLoad={handleLoaded}
-          width="100%"
-          height="100%"
-        />
+        <S.PortraitWrapper>
+          <C.Portrait
+            src={`${material.thumbnail.path}/portrait_fantastic.${material.thumbnail.extension}`}
+            alt={material.title}
+            display={display}
+            onLoad={handleLoaded}
+            width="100%"
+            height="100%"
+          />
+          <S.Tooltip>{material.title}</S.Tooltip>
+        </S.PortraitWrapper>
       </S.Link>
     </>
   );

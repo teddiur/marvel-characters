@@ -19,7 +19,7 @@ function App() {
         />
       )}
       <S.FlexWrapper justify="center">
-        <S.DisclaimerText>
+        <S.DisclaimerText href="https://www.marvel.com/">
           Data provided by Marvel. © 2020 MARVEL
         </S.DisclaimerText>
       </S.FlexWrapper>

@@ -5,7 +5,6 @@ const CardImage = styled.div`
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  /* height: 30vh; */
   position: relative;
   cursor: pointer;
   height: 200px;

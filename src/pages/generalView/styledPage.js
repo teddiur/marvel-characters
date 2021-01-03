@@ -9,11 +9,12 @@ const FlexWrapper = styled.div`
   justify-content: ${(props) => props.justify};
 `;
 
-const DisclaimerText = styled.p`
+const DisclaimerText = styled.a`
   color: white;
   bottom: '0';
   position: 'absolute';
   font-size: 1.2rem;
+  text-decoration: none;
 `;
 
 export { FlexWrapper, DisclaimerText };
