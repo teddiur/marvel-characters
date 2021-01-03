@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import api from '../../services/api';
 import useLastLoaded from '../../services/infiniteScroll';
 import { removeDuplicates } from '../../services/generalFunctions';
+import getData from '../../services/localStorageGeneralCharacters';
 import * as C from '../../components';
 import * as S from './styledPage';
 
@@ -11,36 +11,23 @@ const GeneralView = (props) => {
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const cancel = useRef(() => {});
-
   const observer = useRef();
 
   const lastLoadedChar = useLastLoaded(loading, observer, setOffset, hasMore);
 
-  const makeRequest = async (offset) => {
-    const url = 'characters';
-
-    const response = await api(offset, url, '', cancel);
-    if (response) {
-      const { results, total } = response.data.data;
-      return { results, total };
-    }
-    return { results: [], total: 0 };
-  };
-
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { results, total } = await makeRequest(offset);
+      const { results, total } = await getData(offset, cancel);
       setLoading(false);
       setCharacters((prevChars) => {
         return removeDuplicates([...prevChars, ...results], 'id');
       });
-
       const theresMore = characters.length < total;
       setHasMore(theresMore);
     })();
 
-    const insideCancel = cancel.current; //eslint complains
+    const insideCancel = cancel.current; //eslint complains otherwise
     return () => insideCancel();
   }, [offset]); // eslint-disable-line
 

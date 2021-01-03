@@ -34,7 +34,8 @@
 
 [] localStorage
 
-- [] check if there's required data in localStorage
-- [] check if data's old
-- [] return data from localStorage if it's new
-- [] request required data from api if there isn't/it's old
+- [x] check if there's required data in localStorage
+- [x] check if data's old
+- [x] return data from localStorage if it's new
+- [x] request required data from api if there isn't/it's old
+- [x] adds data if requested
