@@ -2,12 +2,13 @@ import styled from 'styled-components';
 
 const Header = styled.header`
   height: clamp(40px, 8vh, 70px);
+  position: fixed;
+  z-index: 1;
   width: 100%;
   background: black;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
 `;
 
 const Logo = styled.img`
@@ -20,7 +21,7 @@ const Main = styled.main`
   min-height: 100%;
   width: 100%;
   background-image: linear-gradient(0deg, #090e12, #16212a);
-  padding: 0 0 2% 0;
+  padding: clamp(40px, 8vh, 70px) 0 2% 0;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
