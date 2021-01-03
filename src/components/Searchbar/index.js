@@ -37,6 +37,7 @@ function Searchbar({ query, setQuery, setOffset, setResultsVisible }) {
           handleInput(event);
         }}
         onBlur={handleBlurInput}
+        onFocus={() => setResultsVisible(true)}
       />
       {inputActive && (
         <S.CloseIcon src={close} alt="close" onClick={() => setQuery('')} />

@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
-// import getMd5 from '../../services/md5';
-import api from '../../services/api';
+import { makeRequest } from '../../services/api';
 import {
   removeDuplicates,
   useWindowDimensions,
 } from '../../services/generalFunctions';
+import { getLastShown, checkTypes } from '../../utils';
 import * as C from '../../components';
 import * as S from './styledPage';
 
@@ -80,6 +80,7 @@ function DetailedView(props) {
       justify="flex-start"
       width="80%"
       padding="5% 0 0 0"
+      key={String(specificCharacter.id)}
     >
       <S.FlexWrapper
         justify="flex-start"
@@ -136,47 +137,6 @@ function DetailedView(props) {
       </S.FlexWrapper>
     </S.FlexWrapper>
   );
-}
-
-function getLastShown(width, firstShown) {
-  const boxWidth = width - 210;
-  const increment =
-    Math.floor(boxWidth / 250) < 1 ? 1 : Math.floor(boxWidth / 250);
-  return firstShown + increment;
-}
-
-function checkTypes(character) {
-  const types = [
-    { type: 'comics', hasMore: true },
-    { type: 'events', hasMore: true },
-    { type: 'series', hasMore: true },
-    { type: 'stories', hasMore: true },
-  ];
-  const charTypes = [];
-  types.forEach((item) => {
-    try {
-      if (character[item.type].available > 0) {
-        charTypes.push({
-          type: item.type,
-          available: Number(character[item.type].available),
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  });
-  return charTypes;
-}
-
-async function makeRequest(offset, id, cancel, types) {
-  if (types.length === 0) return { results: [], total: 0 };
-  const type = types[0].type;
-
-  const beforeQ = `characters/${id}/${type}`;
-  const response = await api(offset, beforeQ, '', cancel);
-  const { results, total } = response.data.data;
-
-  return { results, total };
 }
 
 export { DetailedView };

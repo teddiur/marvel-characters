@@ -4,7 +4,7 @@ const ResultsContainer = styled.div`
   width: clamp(15%, 200px, 25%);
   min-width: 250px;
   max-height: 50vh;
-  position: absolute;
+  position: fixed;
   right: 0;
   top: clamp(40px, 8vh, 70px);
   z-index: 1;
