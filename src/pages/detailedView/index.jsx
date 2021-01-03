@@ -10,6 +10,7 @@ import * as S from './styledPage';
 
 function DetailedView(props) {
   const { specificCharacter } = props;
+  const { id } = specificCharacter;
 
   const [material, setMaterial] = useState({ id: '', data: [] });
   const [thumbMaterial, setThumbMaterial] = useState({ id: '', data: [] });
@@ -18,20 +19,12 @@ function DetailedView(props) {
   const [offset, setOffset] = useState(0);
   const [firstShown, setFirstShown] = useState(0);
   const [types, setTypes] = useState(checkTypes(specificCharacter));
-  const totalMaterial = useRef(0);
   const cancel = useRef(() => {});
 
   //deals with material shown
   const { width } = useWindowDimensions();
   const lastShown = getLastShown(width, firstShown);
-
   const materialShown = thumbMaterial.data.slice(firstShown, lastShown);
-
-  if (totalMaterial.current === 0 && types.length !== 0) {
-    totalMaterial.current = types.reduce(
-      (acc, cur) => Number(acc.available) + Number(cur.available),
-    );
-  }
 
   const makeRequest = useCallback(
     async (offset, id, cancel) => {
@@ -51,6 +44,7 @@ function DetailedView(props) {
   );
 
   useEffect(() => {
+    //this effect either starts a chain reaction that ends with a request or kills it here
     if (lastShown < thumbMaterial.length) return;
     if (hasMore) setOffset((previous) => previous + 20);
     else if (material.length > 0 && types.length > 0) {
@@ -62,38 +56,34 @@ function DetailedView(props) {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { results, total } = await makeRequest(
-        offset,
-        specificCharacter.id,
-        cancel,
-      );
+      const { results, total } = await makeRequest(offset, id, cancel);
       if (results) {
         setLoading(false);
-        if (material.id === specificCharacter.id) {
+        if (material.id === id) {
           setMaterial((prevChars) => {
             return {
-              id: specificCharacter.id,
+              id,
               data: removeDuplicates([...prevChars.data, ...results], 'id'),
             };
           });
         } else {
           setFirstShown(0);
           setMaterial(() => {
-            return { id: specificCharacter.id, data: results };
+            return { id, data: results };
           });
           const theresMore = material.length < total;
           setHasMore(theresMore);
         }
       }
     })();
-  }, [makeRequest, offset, specificCharacter.id]); //eslint-disable-line
+  }, [makeRequest, offset, id]); //eslint-disable-line
 
   useEffect(() => {
     setThumbMaterial(() => {
       const uniqueWithThumbnails = material.data.filter((item) => {
         return item.thumbnail;
       });
-      return { id: specificCharacter.id, data: uniqueWithThumbnails };
+      return { id, data: uniqueWithThumbnails };
     });
   }, [material]); //eslint-disable-line
 
@@ -136,17 +126,8 @@ function DetailedView(props) {
             {'<'}
           </C.CarouselButton>
         )}
-        {materialShown.map((item, index) => {
-          return (
-            <S.Link key={index} href={item.urls[0].url}>
-              <C.Portrait
-                src={`${item.thumbnail.path}/portrait_fantastic.${item.thumbnail.extension}`}
-                alt={item.title}
-                width="100%"
-                height="auto"
-              />
-            </S.Link>
-          );
+        {materialShown.map((item) => {
+          return <C.MaterialCard key={String(item.id)} material={item} />;
         })}
         {lastShown + 1 <= thumbMaterial.data.length && (
           <C.CarouselButton

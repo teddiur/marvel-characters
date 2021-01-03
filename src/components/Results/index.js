@@ -81,7 +81,6 @@ function Results({
                 height={size}
                 key={index}
                 onClick={() => {
-                  console.log('lica');
                   setSpecificCharacter(item);
                 }}
               >

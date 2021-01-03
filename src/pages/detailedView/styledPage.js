@@ -28,7 +28,4 @@ const Text = styled.p`
   margin-block-start: 0;
 `;
 
-const Link = styled.a`
-  width: max(15%, 200px);
-`;
-export { FlexWrapper, SubTitle, Text, Link };
+export { FlexWrapper, SubTitle, Text };

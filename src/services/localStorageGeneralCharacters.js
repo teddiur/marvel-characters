@@ -24,7 +24,6 @@ export default async function getData(offset, cancel, days = 1) {
       offset + 20,
     );
     const total = JSON.parse(myStorage.getItem('total'));
-    console.log(results, 'storage');
     return { results, total };
   }
 
@@ -37,7 +36,6 @@ export default async function getData(offset, cancel, days = 1) {
 
   myStorage.setItem('results', JSON.stringify(formatForStorage(allResults)));
   myStorage.setItem('total', total);
-  console.log(results, 'request');
 
   return { results, total };
 }

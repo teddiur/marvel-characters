@@ -5,6 +5,7 @@ const Portrait = styled.img`
   height: ${(props) => props.height};
   margin: ${(props) => props.margin};
   object-fit: ${(props) => props.fit};
+  display: ${(props) => props.display};
 `;
 
 export { Portrait };

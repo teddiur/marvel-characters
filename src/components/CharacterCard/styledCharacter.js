@@ -8,12 +8,12 @@ const CardImage = styled.div`
   /* height: 30vh; */
   position: relative;
   cursor: pointer;
-  height: 225px;
+  height: 200px;
   @media (min-width: 375px) {
-    height: calc(225px + (125 * ((100vw - 375px) / 1225)));
+    height: calc(200px + (100 * ((100vw - 375px) / 1225)));
   }
   @media (min-width: 1500px) {
-    height: 350px;
+    height: 300px;
   }
   width: 50%;
   @media (max-width: 650px) {
@@ -31,6 +31,7 @@ const NameBox = styled.div`
   color: black;
   background: white;
   text-align: center;
+  font-weight: 600;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
