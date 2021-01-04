@@ -104,7 +104,7 @@ function DetailedView(props) {
         </S.FlexWrapper>
       </S.FlexWrapper>
       <S.FlexWrapper
-        height="310px"
+        height="300px"
         justify={firstShown + 1 === lastShown ? 'center' : 'space-evenly'}
         align="center"
         position="relative"
