@@ -4,7 +4,6 @@ const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: ${(props) => props.width || '100%'};
 `;
 
 const wave = keyframes` 50%,
@@ -36,9 +35,12 @@ const Dot = styled.div`
 `;
 
 const BeatingContainer = styled.div`
-  width: ${(props) => props.width || '100%'};
+  width: 100%;
   height: 40px;
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const beat = keyframes`
@@ -58,7 +60,8 @@ const BeatingDot = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  animation: ${beat} ${(props) => props.delay} infinite ease-in-out;
+  animation: ${beat} 2s infinite ease-in-out;
+  animation-delay: ${(props) => props.delay};
 `;
 
 export { Dot, LoadingContainer, BeatingContainer, BeatingDot };

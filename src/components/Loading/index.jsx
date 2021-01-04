@@ -7,13 +7,13 @@ function Loading({ width, type = 'pulse' }) {
       <S.Dot key={index} color={color} delay={index * 0.2} />
     )),
     beat: (
-      <S.BeatingContainer width={width}>
+      <S.BeatingContainer>
         {colors.slice(0, 2).map((item, index) => {
           return (
             <S.BeatingDot
               bgColor={item}
               key={index}
-              delay={index === 0 ? '2s' : '-1s'}
+              delay={index === 0 ? '0s' : '3s'}
             />
           );
         })}
