@@ -1,46 +1,69 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import * as S from './styledSearch';
 import { search, close } from '../../assets/';
 
-function Searchbar({ query, setQuery, setOffset, setResultsVisible }) {
+function Searchbar({
+  query,
+  setQuery,
+  setOffset,
+  setResultsVisible,
+  specificCharacter,
+}) {
   const [inputRef, setInputFocus] = useFocus();
   const [isFocus, setIsFocus] = useState(false);
+  const [currentChar, setCurrentCher] = useState(specificCharacter?.id);
 
   function handleInput(event) {
     setQuery(event.target.value);
     setOffset(0);
-    setTimeout(() => {
-      setResultsVisible(true);
-    }, 100);
-  }
-
-  function handleBlurInput() {
-    setIsFocus(false);
-    setTimeout(() => {
-      setResultsVisible(false);
-    }, 100);
+    setResultsVisible(true);
   }
 
   function handleFocus() {
+    setResultsVisible(true);
     setIsFocus(true);
-    setInputFocus();
   }
-  const inputActive = isFocus || query;
+
+  useEffect(
+    () => {
+      if (currentChar !== specificCharacter?.id) {
+        setResultsVisible(false);
+        setCurrentCher(specificCharacter?.id);
+      }
+    },
+    [specificCharacter, currentChar], //eslint-disable-line
+  ); //setResultsVisible is useState, it's a false warning
 
   return (
-    <S.Searchbar searchRight={inputActive ? '100%' : 0}>
-      <img src={search} alt="search" onClick={handleFocus} />
+    <S.Searchbar>
       <S.InputSearch
         ref={inputRef}
         value={query}
         onChange={(event) => {
           handleInput(event);
         }}
-        onBlur={handleBlurInput}
-        onFocus={() => setResultsVisible(true)}
+        onFocus={handleFocus}
+        onBlur={() =>
+          setTimeout(() => {
+            setIsFocus(false);
+          }, 400)
+        }
       />
-      {inputActive && (
-        <S.CloseIcon src={close} alt="close" onClick={() => setQuery('')} />
+      <S.SearchIcon
+        right={isFocus ? '100%' : '0'}
+        src={search}
+        alt="search"
+        onClick={setInputFocus}
+      />
+      {isFocus && (
+        <S.CloseIcon
+          src={close}
+          alt="close"
+          onClick={() => {
+            setQuery('');
+            console.log('PORRA');
+          }}
+        />
       )}
     </S.Searchbar>
   );

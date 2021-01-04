@@ -9,19 +9,21 @@ const Searchbar = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  img:first-child {
-    position: absolute;
-    width: 20px;
-    right: ${(props) => props.searchRight};
-    transition: right 0.15s ease;
-    cursor: pointer;
-  }
 `;
+
+const SearchIcon = styled.img`
+  position: absolute;
+  width: 20px;
+  right: ${(props) => props.right};
+  transition: right 0.15s ease;
+  cursor: pointer;
+`;
+
 const CloseIcon = styled.img`
   width: 20px;
   cursor: pointer;
 `;
+
 const InputSearch = styled.input`
   background-color: transparent;
   border: none;
@@ -36,4 +38,4 @@ const InputSearch = styled.input`
     border-bottom: 1px solid #802733;
   }
 `;
-export { Searchbar, InputSearch, CloseIcon };
+export { Searchbar, InputSearch, CloseIcon, SearchIcon };

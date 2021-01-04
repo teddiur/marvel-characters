@@ -7,7 +7,10 @@ import { GlobalStyle } from './styles';
 function App() {
   const [specificCharacter, setSpecificCharacter] = useState(null);
   return (
-    <C.Layout setSpecificCharacter={setSpecificCharacter}>
+    <C.Layout
+      setSpecificCharacter={setSpecificCharacter}
+      specificCharacter={specificCharacter}
+    >
       <GlobalStyle />
 
       <P.Home

@@ -3,7 +3,7 @@ import { MarvelLogo } from '../../assets/index';
 import * as S from './styledLayout';
 import * as C from '../';
 
-const Layout = ({ setSpecificCharacter, children }) => {
+const Layout = ({ specificCharacter, setSpecificCharacter, children }) => {
   const [offset, setOffset] = useState(0);
   const [query, setQuery] = useState('');
   const [resultsVisible, setResultsVisible] = useState(false);
@@ -21,6 +21,7 @@ const Layout = ({ setSpecificCharacter, children }) => {
           setQuery={setQuery}
           setOffset={setOffset}
           setResultsVisible={setResultsVisible}
+          specificCharacter={specificCharacter}
         />
       </S.Header>
       <C.Results
