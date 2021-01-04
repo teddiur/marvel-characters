@@ -130,7 +130,9 @@ function DetailedView(props) {
             {'>'}
           </C.CarouselButton>
         )}
-        {loading && <C.Loading width="200px" numButtons="3" type="beat" />}
+        {loading && (
+          <C.Loading width="min(15%,200px)" numButtons="3" type="beat" />
+        )}
         {!loading && materialShown.length === 0 && (
           <p>There is no material available</p>
         )}

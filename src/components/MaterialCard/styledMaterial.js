@@ -8,11 +8,9 @@ const Link = styled.a`
 const Tooltip = styled.figcaption`
   visibility: hidden;
   position: absolute;
-  /* top: 45%; */
   width: 100%;
   background-color: black;
   color: #ed1d24;
-  /* box-shadow: 1px 1px 5px white; */
   z-index: 1;
   padding: 2px 2px;
   border-radius: 5px 5px 0 0;
@@ -26,8 +24,6 @@ const PortraitWrapper = styled.div`
   height: 100%;
   display: flex;
   align-items: flex-end;
-  border: 1px solid #afafaf;
-  /* padding: 1px; */
 
   &:hover figcaption {
     visibility: visible;

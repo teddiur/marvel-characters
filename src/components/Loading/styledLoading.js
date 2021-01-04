@@ -1,11 +1,17 @@
 import styled, { keyframes } from 'styled-components';
 
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: ${(props) => props.width || '100%'};
+`;
+
 const wave = keyframes` 50%,
 75% {
   transform: scale(2.5);
 }
-80%,
-100% {
+80%, 100% {
   opacity: 0;
 }`;
 
@@ -29,26 +35,30 @@ const Dot = styled.div`
   }
 `;
 
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  width: ${(props) => props.width || '100%'};
-`;
-
 const BeatingContainer = styled.div`
-  width: 40px;
+  width: ${(props) => props.width || '100%'};
   height: 40px;
   position: relative;
 `;
+
+const beat = keyframes`
+0%, 100% { 
+    transform: scale(0.0);
+  } 50% { 
+    transform: scale(1.0);
+  }
+`;
+
 const BeatingDot = styled.div`
-  width: 100%;
-  height: 100%;
+  width: max(40px, 3vmax);
+  height: max(40px, 3vmax);
   border-radius: 50%;
   background-color: ${(props) => props.bgColor};
   opacity: 0.6;
   position: absolute;
   top: 0;
   left: 0;
-  animation: sk-bounce ${(props) => props.delay} infinite ease-in-out;
+  animation: ${beat} ${(props) => props.delay} infinite ease-in-out;
 `;
+
 export { Dot, LoadingContainer, BeatingContainer, BeatingDot };

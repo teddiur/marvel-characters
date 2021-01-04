@@ -20,9 +20,7 @@ function MaterialCard({ material }) {
   }
   return (
     <>
-      {loading && (
-        <C.Loading width="max(15%, 200px)" numButtons="3" type="beat" />
-      )}
+      {loading && <C.Loading width="max(15%, 200px)" type="beat" />}
       <S.Link href={material.urls[0].url}>
         <S.PortraitWrapper>
           <C.Portrait

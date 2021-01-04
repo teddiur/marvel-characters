@@ -15,7 +15,6 @@ function getMd5() {
 const api = async (offset, beforeQ, afterQ, cancel) => {
   const { ts, md5Hash } = getMd5();
   const url = `https://gateway.marvel.com:443/v1/public/${beforeQ}?${afterQ}offset=${offset}&ts=${ts}&apikey=${process.env.REACT_APP_MARVEL_PUBLIC_KEY}&hash=${md5Hash}`;
-  // let cancel;
 
   const result = await axios({
     method: 'GET',
