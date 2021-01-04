@@ -2,11 +2,14 @@ import { useState } from 'react';
 import * as C from './components';
 import * as P from './pages';
 import * as S from './pages/generalView/styledPage';
+import { GlobalStyle } from './styles';
 
 function App() {
   const [specificCharacter, setSpecificCharacter] = useState(null);
   return (
     <C.Layout setSpecificCharacter={setSpecificCharacter}>
+      <GlobalStyle />
+
       <P.Home
         specificCharacter={specificCharacter}
         setSpecificCharacter={setSpecificCharacter}

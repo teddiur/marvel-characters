@@ -8,14 +8,14 @@ const Layout = ({ setSpecificCharacter, children }) => {
   const [query, setQuery] = useState('');
   const [resultsVisible, setResultsVisible] = useState(false);
 
+  function handleLogoClick() {
+    setSpecificCharacter(null);
+    window.scrollTo(0, 0);
+  }
   return (
     <S.Wrapper>
       <S.Header>
-        <S.Logo
-          onClick={() => setSpecificCharacter(null)}
-          src={MarvelLogo}
-          alt="Logo Marvel"
-        />
+        <S.Logo onClick={handleLogoClick} src={MarvelLogo} alt="Logo Marvel" />
         <C.Searchbar
           query={query}
           setQuery={setQuery}

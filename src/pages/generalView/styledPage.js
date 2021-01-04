@@ -10,9 +10,10 @@ const FlexWrapper = styled.div`
 `;
 
 const DisclaimerText = styled.a`
-  color: white;
   bottom: '0';
+  color: white;
   position: 'absolute';
+  margin-top: 15px;
   font-size: 1.2rem;
   text-decoration: none;
 `;

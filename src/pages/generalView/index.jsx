@@ -61,7 +61,7 @@ const GeneralView = (props) => {
       )}
       {loading && (
         <S.FlexWrapper justify="center" width="100%" padding="5% 0 0 0">
-          <C.Loading />
+          <C.Loading type="beat" />
         </S.FlexWrapper>
       )}
     </>

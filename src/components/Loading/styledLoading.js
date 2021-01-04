@@ -11,9 +11,9 @@ const wave = keyframes` 50%,
 
 const Dot = styled.div`
   position: relative;
-  width: 2em;
-  height: 2em;
-  margin: 0.8em;
+  width: 1vmax;
+  height: 1vmax;
+  margin: 0.5em;
   border-radius: 50%;
   background-color: ${(props) => props.color};
 
@@ -34,4 +34,21 @@ const LoadingContainer = styled.div`
   justify-content: center;
   width: ${(props) => props.width || '100%'};
 `;
-export { Dot, LoadingContainer };
+
+const BeatingContainer = styled.div`
+  width: 40px;
+  height: 40px;
+  position: relative;
+`;
+const BeatingDot = styled.div`
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: ${(props) => props.bgColor};
+  opacity: 0.6;
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: sk-bounce ${(props) => props.delay} infinite ease-in-out;
+`;
+export { Dot, LoadingContainer, BeatingContainer, BeatingDot };
